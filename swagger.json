@@ -144,6 +144,97 @@
           }
         }
       }
+    },
+    "/api/review": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "Get my review",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Review"],
+        "summary": "Add or update my review",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Review's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful created review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Successful updated review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Review"],
+        "summary": "Delete my review",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "200": {
+            "description": "Your review is successful deleted",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -211,6 +302,32 @@
             "type": "string",
             "description": "User's email",
             "format": "email"
+          }
+        }
+      },
+      "ReviewRequest": {
+        "type": "object",
+        "required": ["review"],
+        "properties": {
+          "review": {
+            "type": "string",
+            "description": "User's review",
+            "example": "Good app"
+          }
+        }
+      },
+      "ReviewResponse": {
+        "type": "object",
+        "properties": {
+          "review": {
+            "type": "string",
+            "description": "User's review",
+            "example": "Good app"
+          },
+          "id": {
+            "type": "string",
+            "description": "Review's id",
+            "example": "64eb5ac981281a81a9aff02f"
           }
         }
       }
