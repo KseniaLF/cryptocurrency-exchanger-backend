@@ -1,15 +1,15 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "http://localhost:3001" },
-    { "url": "https://crypto-ag2e.onrender.com" }
+    { "url": "https://crypto-ag2e.onrender.com" },
+    { "url": "http://localhost:3001" }
   ],
   "tags": [
     {
