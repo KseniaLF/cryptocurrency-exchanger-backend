@@ -6,7 +6,12 @@ require("dotenv").config();
 const reviewRouter = require("./routes/api/review");
 const authRouter = require("./routes/auth");
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
 const app = express();
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
