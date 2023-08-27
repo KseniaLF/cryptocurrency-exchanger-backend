@@ -124,6 +124,26 @@
           }
         }
       }
+    },
+    "/users/logout": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Logout user, clear the token",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
