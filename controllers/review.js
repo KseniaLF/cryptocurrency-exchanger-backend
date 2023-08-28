@@ -44,23 +44,8 @@ const removeReview = async (req, res, next) => {
   res.status(200).json({ message: "Your review is successfully deleted" });
 };
 
-const removeReviewAdmin = async (req, res, next) => {
-  // Admin possible feature
-  const { _id: owner } = req.user;
-
-  const deletedReview = await Review.findOneAndDelete({
-    owner,
-  });
-
-  if (!deletedReview) {
-    throw new HttpError(404, "Not found");
-  }
-  res.status(200).json({ message: "Review is successfully deleted" });
-};
-
 module.exports = {
   addReview: ctrlWrapper(addReview),
   getReview: ctrlWrapper(getReview),
   removeReview: ctrlWrapper(removeReview),
-  removeReviewAdmin: ctrlWrapper(removeReviewAdmin),
 };
