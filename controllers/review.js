@@ -3,6 +3,18 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 
 const Review = require("../models/review");
 
+const getAllReviews = async (req, res, next) => {
+  const { page = 1, limit = 5 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const review = await Review.find()
+    .skip(skip)
+    .limit(limit)
+    .populate("owner", "email name");
+
+  res.status(200).json(review);
+};
+
 const addReview = async (req, res, next) => {
   const { _id: owner } = req.user;
   const body = req.body;
@@ -12,7 +24,7 @@ const addReview = async (req, res, next) => {
   }).select("-owner");
 
   if (!updatedReview) {
-    const newReview = await Review.create({ ...body, owner }).select("-owner");
+    const newReview = await Review.create({ ...body, owner });
     res.status(201).json(newReview);
   } else {
     res.status(200).json(updatedReview);
@@ -42,6 +54,7 @@ const removeReview = async (req, res, next) => {
 };
 
 module.exports = {
+  getAllReviews: ctrlWrapper(getAllReviews),
   addReview: ctrlWrapper(addReview),
   getReview: ctrlWrapper(getReview),
   removeReview: ctrlWrapper(removeReview),

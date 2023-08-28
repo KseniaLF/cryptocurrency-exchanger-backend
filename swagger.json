@@ -148,6 +148,26 @@
     "/api/review": {
       "get": {
         "tags": ["Review"],
+        "summary": "Get all reviews",
+        "parameters": [],
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllReviewsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/review/my": {
+      "get": {
+        "tags": ["Review"],
         "summary": "Get my review",
 
         "parameters": [],
@@ -328,6 +348,33 @@
             "type": "string",
             "description": "Review's id",
             "example": "64eb5ac981281a81a9aff02f"
+          }
+        }
+      },
+      "AllReviewsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "review": {
+              "type": "string",
+              "description": "User's review",
+              "example": "Good app"
+            },
+            "_id": {
+              "type": "string",
+              "description": "Review's id",
+              "example": "64eb5ac981281a81a9aff02f"
+            },
+            "owner": {
+              "type": "string",
+              "description": "Review's owner",
+              "example": {
+                "_id": "64ec2488249ccdd3015cb71b",
+                "email": "user@example.com",
+                "name": "User Name"
+              }
+            }
           }
         }
       }
