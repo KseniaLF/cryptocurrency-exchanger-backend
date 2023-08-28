@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node ./server.js",
     "dev": "nodemon ./server.js",
+    "swag": "node swagger.js",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },
@@ -22,6 +23,7 @@
     "mongoose": "^7.3.0",
     "morgan": "1.10.0",
     "nanoid": "^3.3.4",
+    "swagger-autogen": "^2.23.5",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
