@@ -14,6 +14,8 @@ router.get("/", reviewController.getReview);
 
 router.post("/", validateBody(reviewSchema), reviewController.addReview);
 
-router.delete("/", isAdmin, reviewController.removeReview);
+router.delete("/", reviewController.removeReview);
+
+router.delete("/", isAdmin, reviewController.removeReviewAdmin);
 
 module.exports = router;
