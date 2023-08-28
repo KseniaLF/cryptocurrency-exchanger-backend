@@ -6,6 +6,11 @@ const reviewSchema = new Schema(
       type: String,
       required: [true, "Set review"],
     },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "not accepted"],
+      default: "pending",
+    },
 
     owner: {
       type: Schema.Types.ObjectId,
