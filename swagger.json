@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.3.0",
+    "version": "0.4.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -171,6 +171,54 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Review not found"
+          }
+        }
+      }
+    },
+    "/api/review/{id}": {
+      "patch": {
+        "tags": ["Review"],
+        "summary": "Update review status for admins",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the review to update"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Review Status Update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewStatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewStatusUpdateResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Review not found"
           }
         }
       }
@@ -377,7 +425,7 @@
               "example": "64eb5ac981281a81a9aff02f"
             },
             "owner": {
-              "type": "string",
+              "type": "object",
               "description": "Review's owner",
               "example": {
                 "_id": "64ec2488249ccdd3015cb71b",
@@ -385,6 +433,37 @@
                 "name": "User Name"
               }
             }
+          }
+        }
+      },
+      "ReviewStatusUpdateRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Review's status",
+            "example": "accepted"
+          }
+        }
+      },
+      "ReviewStatusUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Review's status",
+            "example": "accepted"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Review's id",
+            "example": "64eb5ac981281a81a9aff02f"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Review's owner",
+            "example": "64ec2488249ccdd3015cb71b"
           }
         }
       }
