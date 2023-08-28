@@ -12,7 +12,7 @@ const addReview = async (req, res, next) => {
   }).select("-owner");
 
   if (!updatedReview) {
-    const newReview = await Review.create({ ...body, owner }).select("-owner");
+    const newReview = await Review.create({ ...body, owner });
     res.status(201).json(newReview);
   } else {
     res.status(200).json(updatedReview);
