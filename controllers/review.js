@@ -53,9 +53,24 @@ const removeReview = async (req, res, next) => {
   res.json({ message: "Your review is deleted" });
 };
 
+const updateStatusReview = async (req, res, next) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  const updatedReview = await Review.findByIdAndUpdate({ _id: id }, body, {
+    new: true,
+  });
+
+  if (!updatedReview) {
+    throw new HttpError(404, "Not found");
+  }
+  res.json(updatedReview);
+};
+
 module.exports = {
   getAllReviews: ctrlWrapper(getAllReviews),
   addReview: ctrlWrapper(addReview),
   getReview: ctrlWrapper(getReview),
   removeReview: ctrlWrapper(removeReview),
+  updateStatusReview: ctrlWrapper(updateStatusReview),
 };

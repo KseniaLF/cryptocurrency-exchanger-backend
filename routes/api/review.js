@@ -4,7 +4,7 @@ const router = express.Router();
 const { authenticate } = require("../../middlewares");
 const { validateBody } = require("../../middlewares");
 
-const { reviewSchema } = require("../../schemas");
+const { reviewSchema, reviewStatusSchema } = require("../../schemas");
 const { reviewController } = require("../../controllers");
 const isAdmin = require("../../middlewares/isAdmin");
 
@@ -16,6 +16,13 @@ router.get("/my", reviewController.getReview);
 
 router.post("/my", validateBody(reviewSchema), reviewController.addReview);
 
-router.delete("/my", isAdmin, reviewController.removeReview);
+router.delete("/my", reviewController.removeReview);
+
+router.patch(
+  "/:id",
+  isAdmin,
+  validateBody(reviewStatusSchema),
+  reviewController.updateStatusReview
+);
 
 module.exports = router;
