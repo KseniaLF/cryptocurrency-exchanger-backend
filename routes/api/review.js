@@ -8,12 +8,14 @@ const { reviewSchema } = require("../../schemas");
 const { reviewController } = require("../../controllers");
 const isAdmin = require("../../middlewares/isAdmin");
 
+router.get("/", reviewController.getAllReviews);
+
 router.use(authenticate);
 
-router.get("/", reviewController.getReview);
+router.get("/my", reviewController.getReview);
 
-router.post("/", validateBody(reviewSchema), reviewController.addReview);
+router.post("/my", validateBody(reviewSchema), reviewController.addReview);
 
-router.delete("/", isAdmin, reviewController.removeReview);
+router.delete("/my", isAdmin, reviewController.removeReview);
 
 module.exports = router;
