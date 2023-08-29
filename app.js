@@ -3,8 +3,9 @@ const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 
-const reviewRouter = require("./routes/api/review");
 const authRouter = require("./routes/auth");
+const reviewRouter = require("./routes/api/review");
+const transactionRouter = require("./routes/api/transaction");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -19,9 +20,11 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
+app.use("/users", authRouter);
+
 app.use("/api/review", reviewRouter);
 
-app.use("/users", authRouter);
+app.use("/api/transactions", transactionRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
