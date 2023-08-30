@@ -154,7 +154,8 @@
             "name": "cursor",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": null
             },
             "description": "Cursor from previos response"
           },
@@ -162,9 +163,19 @@
             "name": "status",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": "pending"
             },
             "description": "Review status"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 2
+            },
+            "description": "Items on the page"
           }
         ],
 
