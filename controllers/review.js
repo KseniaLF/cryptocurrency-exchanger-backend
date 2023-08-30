@@ -4,15 +4,27 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 const Review = require("../models/review");
 
 const getAllReviews = async (req, res, next) => {
-  const { page = 1, limit = 5 } = req.query;
-  const skip = (page - 1) * limit;
+  const { cursor } = req.query;
+  const { limit = 2 } = req.query; // Кількість елементів на сторінці
+  const { status = "pending" } = req.query; // By default status is "pending"
 
-  const review = await Review.find()
-    .skip(skip)
+  let query = { status }; // Initial request for filtering by status
+  if (cursor) {
+    query = { status, _id: { $gt: cursor } };
+  }
+
+  const items = await Review.find(query)
+    .sort("_id")
     .limit(limit)
-    .populate("owner", "email name");
+    .populate("owner", "_id role createdAt email name");
 
-  res.status(200).json(review);
+  // Отримання останнього елементу для встановлення нового курсора
+  const lastItem = items[items.length - 1];
+
+  res.json({
+    items,
+    nextCursor: lastItem ? lastItem._id : null, // Встановлення нового курсора
+  });
 };
 
 const addReview = async (req, res, next) => {
@@ -35,7 +47,6 @@ const getReview = async (req, res, next) => {
   const { _id: owner } = req.user;
 
   const review = await Review.findOne({ owner: owner });
-  // .populate("owner", "email name");
 
   res.status(200).json(review);
 };

@@ -20,7 +20,7 @@ router.delete("/my", reviewController.removeReview);
 
 router.patch(
   "/:id",
-  isAdmin,
+  // isAdmin,
   validateBody(reviewStatusSchema),
   reviewController.updateStatusReview
 );
