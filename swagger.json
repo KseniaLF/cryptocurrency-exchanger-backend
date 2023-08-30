@@ -1,15 +1,15 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.4.0",
+    "version": "0.5.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "https://crypto-ag2e.onrender.com" },
-    { "url": "http://localhost:3001" }
+    { "url": "http://localhost:3001" },
+    { "url": "https://crypto-ag2e.onrender.com" }
   ],
   "tags": [
     {
@@ -148,16 +148,15 @@
     "/api/review": {
       "get": {
         "tags": ["Review"],
-        "summary": "Get all reviews",
+        "summary": "Get all reviews with status: pending",
         "parameters": [
           {
-            "name": "page",
+            "name": "cursor",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "minimum": 1
+              "type": "string"
             },
-            "description": "Page number for pagination"
+            "description": "Cursor from previos response"
           }
         ],
 
@@ -410,29 +409,51 @@
         }
       },
       "AllReviewsResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "review": {
-              "type": "string",
-              "description": "User's review",
-              "example": "Good app"
-            },
-            "_id": {
-              "type": "string",
-              "description": "Review's id",
-              "example": "64eb5ac981281a81a9aff02f"
-            },
-            "owner": {
-              "type": "object",
-              "description": "Review's owner",
-              "example": {
-                "_id": "64ec2488249ccdd3015cb71b",
-                "email": "user@example.com",
-                "name": "User Name"
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "_id": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "Review's id",
+                  "format": "email"
+                },
+                "review": {
+                  "type": "string",
+                  "description": "User's review",
+                  "example": "Good app"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Review's status",
+                  "example": "pending"
+                },
+                "owner": {
+                  "type": "object",
+                  "description": "Review's owner",
+                  "example": {
+                    "_id": "64ec2488249ccdd3015cb71b",
+                    "email": "user@example.com",
+                    "name": "User Name",
+                    "role": "user",
+                    "createdAt": "2023-08-30T12:45:55.112Z"
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "Date when the review was created",
+                  "example": "2023-08-30T12:45:55.112Z"
+                }
               }
             }
+          },
+          "nextCursor": {
+            "type": "string",
+            "description": "Cursor: Transaction's id",
+            "example": "64eb5ac981281a81a9aff02f"
           }
         }
       },
