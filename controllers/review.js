@@ -4,12 +4,13 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 const Review = require("../models/review");
 
 const getAllReviews = async (req, res, next) => {
-  const limit = 2; // Кількість елементів на сторінці
-  const cursor = req.query.cursor; // Отримання параметру cursor з запиту
+  const limit = 1; // Кількість елементів на сторінці
+  const { cursor } = req.query;
+  const { status = "pending" } = req.query; // By default status is "pending"
 
-  let query = { status: "pending" }; // Початковий запит для фільтрації за статусом
+  let query = { status }; // Initial request for filtering by status
   if (cursor) {
-    query = { status: "pending", _id: { $gt: cursor } }; // Використовуємо _id як курсор
+    query = { status, _id: { $gt: cursor } };
   }
 
   const items = await Review.find(query)

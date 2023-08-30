@@ -157,6 +157,14 @@
               "type": "string"
             },
             "description": "Cursor from previos response"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Review status"
           }
         ],
 
