@@ -21,9 +21,17 @@ const getAllReviews = async (req, res, next) => {
   // Отримання останнього елементу для встановлення нового курсора
   const lastItem = items[items.length - 1];
 
+  const nextCursor = lastItem ? lastItem._id : null;
+
+  const nextPageItems = await Review.find({
+    status,
+    _id: { $gt: nextCursor },
+  }).limit(1);
+
   res.json({
     items,
-    nextCursor: lastItem ? lastItem._id : null, // Встановлення нового курсора
+    nextCursor, // Встановлення нового курсора
+    hasMore: nextPageItems.length > 0,
   });
 };
 

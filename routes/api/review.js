@@ -10,7 +10,7 @@ const isAdmin = require("../../middlewares/isAdmin");
 
 router.get("/", reviewController.getAllReviews);
 
-router.use(authenticate);
+// router.use(authenticate);
 
 router.get("/my", reviewController.getReview);
 
