@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { authenticate } = require("../../middlewares");
+// const { authenticate } = require("../../middlewares");
 const { validateBody } = require("../../middlewares");
 
 const { reviewSchema, reviewStatusSchema } = require("../../schemas");
 const { reviewController } = require("../../controllers");
-const isAdmin = require("../../middlewares/isAdmin");
+// const isAdmin = require("../../middlewares/isAdmin");
 
 router.get("/", reviewController.getAllReviews);
 

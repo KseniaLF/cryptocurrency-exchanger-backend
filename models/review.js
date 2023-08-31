@@ -8,7 +8,7 @@ const reviewSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "not accepted"],
+      enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
 
