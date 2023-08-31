@@ -3,6 +3,18 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 
 const Review = require("../models/review");
 
+const getApprovedReviews = async (req, res, next) => {
+  const { page = 1, limit = 5 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const review = await Review.find()
+    .skip(skip)
+    .limit(limit)
+    .populate("owner", "_id role createdAt email name");
+
+  res.status(200).json(review);
+};
+
 const getAllReviews = async (req, res, next) => {
   console.log("HI");
   const { cursor } = req.query;
@@ -40,6 +52,7 @@ const getAllReviews = async (req, res, next) => {
 };
 
 const addReview = async (req, res, next) => {
+  console.log(req.user);
   const { _id: owner } = req.user;
   const body = req.body;
 
@@ -92,6 +105,8 @@ const updateStatusReview = async (req, res, next) => {
 
 module.exports = {
   getAllReviews: ctrlWrapper(getAllReviews),
+  getApprovedReviews: ctrlWrapper(getApprovedReviews),
+
   addReview: ctrlWrapper(addReview),
   getReview: ctrlWrapper(getReview),
   removeReview: ctrlWrapper(removeReview),

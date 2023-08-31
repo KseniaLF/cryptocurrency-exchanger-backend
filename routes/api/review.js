@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// const { authenticate } = require("../../middlewares");
+const { authenticate } = require("../../middlewares");
 const { validateBody } = require("../../middlewares");
 
 const { reviewSchema, reviewStatusSchema } = require("../../schemas");
@@ -10,7 +10,9 @@ const { reviewController } = require("../../controllers");
 
 router.get("/", reviewController.getAllReviews);
 
-// router.use(authenticate);
+router.get("/approved", reviewController.getApprovedReviews);
+
+router.use(authenticate);
 
 router.get("/my", reviewController.getReview);
 
