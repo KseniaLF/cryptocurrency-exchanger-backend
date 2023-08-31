@@ -4,6 +4,7 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 const Review = require("../models/review");
 
 const getAllReviews = async (req, res, next) => {
+  console.log("HI");
   const { cursor } = req.query;
   const { limit = 2 } = req.query; // Кількість елементів на сторінці
   const { status = "pending" } = req.query; // By default status is "pending"
