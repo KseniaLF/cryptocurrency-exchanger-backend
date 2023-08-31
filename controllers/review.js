@@ -9,8 +9,11 @@ const getAllReviews = async (req, res, next) => {
   const { status = "pending" } = req.query; // By default status is "pending"
 
   let query = { status }; // Initial request for filtering by status
+  if (status === "all") query = {}; // return all results
+
+  console.log(query);
   if (cursor) {
-    query = { status, _id: { $gt: cursor } };
+    query = { ...query, _id: { $gt: cursor } };
   }
 
   const items = await Review.find(query)
@@ -21,9 +24,17 @@ const getAllReviews = async (req, res, next) => {
   // Отримання останнього елементу для встановлення нового курсора
   const lastItem = items[items.length - 1];
 
+  const nextCursor = lastItem ? lastItem._id : null;
+
+  const nextPageItems = await Review.find({
+    ...query,
+    _id: { $gt: nextCursor },
+  }).limit(1);
+
   res.json({
     items,
-    nextCursor: lastItem ? lastItem._id : null, // Встановлення нового курсора
+    nextCursor, // Встановлення нового курсора
+    hasMore: nextPageItems.length > 0,
   });
 };
 
