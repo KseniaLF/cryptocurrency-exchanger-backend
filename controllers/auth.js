@@ -56,9 +56,19 @@ const login = async (req, res, next) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email } = req.user;
+  const { user } = req;
 
-  res.json({ name, email });
+  res.json({
+    email: user.email,
+    role: user.role,
+    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    middleName: user.middleName,
+
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  });
 };
 
 const logout = async (req, res) => {
@@ -69,9 +79,20 @@ const logout = async (req, res) => {
   res.status(204).end();
 };
 
+const updateUserData = async (req, res) => {
+  const { user, body } = req;
+
+  const updatedReview = await User.findByIdAndUpdate({ _id: user._id }, body, {
+    new: true,
+  });
+
+  res.json(updatedReview); // change to other data or text
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateUserData: ctrlWrapper(updateUserData),
 };

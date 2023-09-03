@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.6.0",
+    "version": "0.7.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -72,7 +72,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
+                "$ref": "#/components/schemas/LoginRequest"
               }
             }
           }
@@ -143,6 +143,27 @@
             "content": {}
           }
         }
+      }
+    },
+    "/users/updateData": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User update names data",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDataRequest"
+              }
+            }
+          }
+        },
+        "responses": {}
       }
     },
     "/api/review": {
@@ -379,44 +400,18 @@
         "required": ["email", "password"],
         "properties": {
           "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "$ref": "#/components/minischemas/auth/email"
           },
           "password": {
-            "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "$ref": "#/components/minischemas/auth/password"
           },
           "name": {
-            "type": "string",
-            "description": "User's name",
-            "example": "User Name"
+            "$ref": "#/components/minischemas/auth/name"
           }
         }
       },
       "RegistrationResponse": {
         "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
-            },
-            "name": {
-              "type": "string",
-              "description": "User's name",
-              "example": "User Name"
-            },
-            "token": {
-              "type": "string",
-              "description": "User's token",
-              "example": "rsgr456sbert"
-            }
-          }
-        },
         "example": {
           "token": "rsgr456sbert",
           "user": {
@@ -425,18 +420,69 @@
           }
         }
       },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "$ref": "#/components/minischemas/auth/email"
+          },
+          "password": {
+            "$ref": "#/components/minischemas/auth/password"
+          }
+        }
+      },
       "CurrentUserResponse": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "description": "User's name",
-            "example": "User Name"
+            "$ref": "#/components/minischemas/auth/name"
           },
           "email": {
+            "$ref": "#/components/minischemas/auth/email"
+          },
+          "role": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "description": "User's role",
+            "format": "user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Smith"
+          },
+          "middleName": {
+            "type": "string",
+            "description": "User's name",
+            "example": "William"
+          },
+          "createdAt": {
+            "$ref": "#/components/minischemas/createdAt"
+          },
+          "updatedAt": {
+            "$ref": "#/components/minischemas/updatedAt"
+          }
+        }
+      },
+      "UpdateDataRequest": {
+        "type": "object",
+        "properties": {
+          "lastName": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "firstName": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "name": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "middleName": {
+            "$ref": "#/components/minischemas/auth/name"
           }
         }
       },
@@ -445,9 +491,7 @@
         "required": ["review"],
         "properties": {
           "review": {
-            "type": "string",
-            "description": "User's review",
-            "example": "Good app"
+            "$ref": "#/components/minischemas/review"
           }
         }
       },
@@ -455,14 +499,10 @@
         "type": "object",
         "properties": {
           "review": {
-            "type": "string",
-            "description": "User's review",
-            "example": "Good app"
+            "$ref": "#/components/minischemas/review"
           },
-          "id": {
-            "type": "string",
-            "description": "Review's id",
-            "example": "64eb5ac981281a81a9aff02f"
+          "_id": {
+            "$ref": "#/components/minischemas/id"
           }
         }
       },
@@ -475,33 +515,19 @@
               "_id": "object",
               "properties": {
                 "_id": {
-                  "type": "string",
-                  "description": "Review's id",
-                  "example": "64ec91a6a3ffc1c8e78cf255"
+                  "$ref": "#/components/minischemas/id"
                 },
                 "review": {
-                  "type": "string",
-                  "description": "User's review",
-                  "example": "Good app"
+                  "$ref": "#/components/minischemas/review"
                 },
                 "status": {
-                  "type": "string",
-                  "description": "Review's status",
-                  "example": "accepted"
+                  "$ref": "#/components/minischemas/status"
                 },
                 "owner": {
-                  "type": "object",
-                  "description": "Review's owner",
-                  "example": {
-                    "_id": "64ec2488249ccdd3015cb71b",
-                    "name": "User Name",
-                    "createdAt": "2023-08-30T12:45:55.112Z"
-                  }
+                  "$ref": "#/components/minischemas/auth/ownerPublic"
                 },
                 "createdAt": {
-                  "type": "string",
-                  "description": "Date when the review was created",
-                  "example": "2023-08-30T12:45:55.112Z"
+                  "$ref": "#/components/minischemas/createdAt"
                 }
               }
             }
@@ -526,36 +552,20 @@
             "items": {
               "_id": "object",
               "properties": {
-                "email": {
-                  "type": "string",
-                  "description": "Review's id",
-                  "format": "email"
+                "_id": {
+                  "$ref": "#/components/minischemas/id"
                 },
                 "review": {
-                  "type": "string",
-                  "description": "User's review",
-                  "example": "Good app"
+                  "$ref": "#/components/minischemas/review"
                 },
                 "status": {
-                  "type": "string",
-                  "description": "Review's status",
-                  "example": "pending"
+                  "$ref": "#/components/minischemas/status"
                 },
                 "owner": {
-                  "type": "object",
-                  "description": "Review's owner",
-                  "example": {
-                    "_id": "64ec2488249ccdd3015cb71b",
-                    "email": "user@example.com",
-                    "name": "User Name",
-                    "role": "user",
-                    "createdAt": "2023-08-30T12:45:55.112Z"
-                  }
+                  "$ref": "#/components/minischemas/auth/owner"
                 },
                 "createdAt": {
-                  "type": "string",
-                  "description": "Date when the review was created",
-                  "example": "2023-08-30T12:45:55.112Z"
+                  "$ref": "#/components/minischemas/createdAt"
                 }
               }
             }
@@ -572,9 +582,7 @@
         "required": ["status"],
         "properties": {
           "status": {
-            "type": "string",
-            "description": "Review's status",
-            "example": "accepted"
+            "$ref": "#/components/minischemas/status"
           }
         }
       },
@@ -582,14 +590,10 @@
         "type": "object",
         "properties": {
           "status": {
-            "type": "string",
-            "description": "Review's status",
-            "example": "accepted"
+            "$ref": "#/components/minischemas/status"
           },
           "_id": {
-            "type": "string",
-            "description": "Review's id",
-            "example": "64eb5ac981281a81a9aff02f"
+            "$ref": "#/components/minischemas/id"
           },
           "owner": {
             "type": "string",
@@ -597,6 +601,69 @@
             "example": "64ec2488249ccdd3015cb71b"
           }
         }
+      }
+    },
+    "minischemas": {
+      "auth": {
+        "email": {
+          "type": "string",
+          "description": "User's email",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's name",
+          "example": "User Name"
+        },
+        "owner": {
+          "type": "object",
+          "example": {
+            "_id": "64ec2488249ccdd3015cb71b",
+            "email": "user@example.com",
+            "name": "User Name",
+            "role": "user",
+            "createdAt": "2023-08-30T12:45:55.112Z"
+          }
+        },
+        "ownerPublic": {
+          "type": "object",
+          "example": {
+            "_id": "64ec2488249ccdd3015cb71b",
+            "name": "User Name",
+            "createdAt": "2023-08-30T12:45:55.112Z"
+          }
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password",
+          "example": "qwerty123"
+        }
+      },
+
+      "id": {
+        "type": "string",
+        "example": "64ec91a6a3ffc1c8e78cf255"
+      },
+      "status": {
+        "type": "string",
+        "description": "Status of operation",
+        "example": "accepted"
+      },
+      "review": {
+        "type": "string",
+        "description": "User's review",
+        "example": "Good app"
+      },
+
+      "createdAt": {
+        "type": "string",
+        "description": "Date when the user was registered",
+        "example": "2023-08-30T12:45:55.112Z"
+      },
+      "updatedAt": {
+        "type": "string",
+        "description": "Date when the data was updated",
+        "example": "2023-08-30T12:45:55.112Z"
       }
     },
     "securitySchemes": {
