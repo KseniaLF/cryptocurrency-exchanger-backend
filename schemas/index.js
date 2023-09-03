@@ -1,11 +1,15 @@
-const authSchema = require("./auth");
-const reviewSchema = require("./review");
-const reviewStatusSchema = require("./reviewStatus");
-const transactionSchema = require("./transaction");
-const transactionStatusSchema = require("./transactionStatus");
+const registerSchema = require("./auth/register");
+const loginSchema = require("./auth/login");
+
+const reviewSchema = require("./review/review");
+const reviewStatusSchema = require("./review/reviewStatus");
+
+const transactionSchema = require("./transaction/transaction");
+const transactionStatusSchema = require("./transaction/transactionStatus");
 
 module.exports = {
-  authSchema,
+  registerSchema,
+  loginSchema,
   reviewSchema,
   reviewStatusSchema,
   transactionSchema,

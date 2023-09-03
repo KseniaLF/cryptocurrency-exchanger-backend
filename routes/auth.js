@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { authenticate, validateBody } = require("../middlewares");
-const { authSchema } = require("../schemas");
+const { loginSchema, registerSchema } = require("../schemas");
 const { authController } = require("../controllers");
 
 const jsonParser = express.json();
@@ -10,14 +10,14 @@ const jsonParser = express.json();
 router.post(
   "/register",
   jsonParser,
-  validateBody(authSchema),
+  validateBody(registerSchema),
   authController.register
 );
 
 router.post(
   "/login",
   jsonParser,
-  validateBody(authSchema),
+  validateBody(loginSchema),
   authController.login
 );
 
