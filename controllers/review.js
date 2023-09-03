@@ -12,7 +12,7 @@ const getApprovedReviews = async (req, res, next) => {
   const reviews = await Review.find()
     .skip(skip)
     .limit(limit)
-    .populate("owner", "_id role createdAt email name");
+    .populate("owner", "_id createdAt name");
 
   res.status(200).json({
     reviews,

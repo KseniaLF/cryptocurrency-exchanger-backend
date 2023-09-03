@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.5.1",
+    "version": "0.6.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -192,6 +192,45 @@
           },
           "404": {
             "description": "Review not found"
+          }
+        }
+      }
+    },
+    "/api/review/approved": {
+      "get": {
+        "tags": ["Review"],
+        "summary": "Get all approved reviews",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Items on the page"
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovedReviewsResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -424,6 +463,58 @@
             "type": "string",
             "description": "Review's id",
             "example": "64eb5ac981281a81a9aff02f"
+          }
+        }
+      },
+      "ApprovedReviewsResponse": {
+        "type": "object",
+        "properties": {
+          "reviews": {
+            "type": "array",
+            "items": {
+              "_id": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Review's id",
+                  "example": "64ec91a6a3ffc1c8e78cf255"
+                },
+                "review": {
+                  "type": "string",
+                  "description": "User's review",
+                  "example": "Good app"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Review's status",
+                  "example": "accepted"
+                },
+                "owner": {
+                  "type": "object",
+                  "description": "Review's owner",
+                  "example": {
+                    "_id": "64ec2488249ccdd3015cb71b",
+                    "name": "User Name",
+                    "createdAt": "2023-08-30T12:45:55.112Z"
+                  }
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "Date when the review was created",
+                  "example": "2023-08-30T12:45:55.112Z"
+                }
+              }
+            }
+          },
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page",
+            "example": 1
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total pages",
+            "example": 10
           }
         }
       },
