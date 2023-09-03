@@ -79,9 +79,20 @@ const logout = async (req, res) => {
   res.status(204).end();
 };
 
+const updateUserData = async (req, res) => {
+  const { user, body } = req;
+
+  const updatedReview = await User.findByIdAndUpdate({ _id: user._id }, body, {
+    new: true,
+  });
+
+  res.json(updatedReview); // change to other data or text
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateUserData: ctrlWrapper(updateUserData),
 };

@@ -25,4 +25,6 @@ router.get("/current", authenticate, authController.getCurrent);
 
 router.get("/logout", authenticate, authController.logout);
 
+router.patch("/updateData", authenticate, authController.updateUserData);
+
 module.exports = router;

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.6.3",
+    "version": "0.7.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -143,6 +143,27 @@
             "content": {}
           }
         }
+      }
+    },
+    "/users/updateData": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "User update names data",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDataRequest"
+              }
+            }
+          }
+        },
+        "responses": {}
       }
     },
     "/api/review": {
@@ -445,6 +466,23 @@
           },
           "updatedAt": {
             "$ref": "#/components/minischemas/updatedAt"
+          }
+        }
+      },
+      "UpdateDataRequest": {
+        "type": "object",
+        "properties": {
+          "lastName": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "firstName": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "name": {
+            "$ref": "#/components/minischemas/auth/name"
+          },
+          "middleName": {
+            "$ref": "#/components/minischemas/auth/name"
           }
         }
       },
