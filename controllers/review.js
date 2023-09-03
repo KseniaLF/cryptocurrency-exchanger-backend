@@ -7,12 +7,18 @@ const getApprovedReviews = async (req, res, next) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
-  const review = await Review.find()
+  const totalReviews = await Review.countDocuments({});
+
+  const reviews = await Review.find()
     .skip(skip)
     .limit(limit)
-    .populate("owner", "_id role createdAt email name");
+    .populate("owner", "_id createdAt name");
 
-  res.status(200).json(review);
+  res.status(200).json({
+    reviews,
+    currentPage: Number(page),
+    totalPages: Math.ceil(totalReviews / limit),
+  });
 };
 
 const getAllReviews = async (req, res, next) => {
