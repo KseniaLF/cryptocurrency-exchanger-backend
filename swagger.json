@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.6.1",
+    "version": "0.6.2",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -453,6 +453,36 @@
             "type": "string",
             "description": "User's email",
             "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "description": "User's role",
+            "format": "user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User's first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User's last name",
+            "example": "Smith"
+          },
+          "middleName": {
+            "type": "string",
+            "description": "User's name",
+            "example": "William"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date when the user was registered",
+            "example": "2023-08-30T12:45:55.112Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date when the user data was updated",
+            "example": "2023-08-30T12:45:55.112Z"
           }
         }
       },

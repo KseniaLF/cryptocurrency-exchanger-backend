@@ -56,9 +56,19 @@ const login = async (req, res, next) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { name, email } = req.user;
+  const { user } = req;
 
-  res.json({ name, email });
+  res.json({
+    email: user.email,
+    role: user.role,
+    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    middleName: user.middleName,
+
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  });
 };
 
 const logout = async (req, res) => {
