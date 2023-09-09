@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/api/review");
 const transactionRouter = require("./routes/api/transaction");
+const captchaRouter = require("./routes/api/captcha");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -25,6 +26,8 @@ app.use("/users", authRouter);
 app.use("/api/review", reviewRouter);
 
 app.use("/api/transactions", transactionRouter);
+
+app.use("/captcha", captchaRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
