@@ -6,17 +6,17 @@ const postCaptcha = async (req, res, next) => {
   const body = req.body;
 
   const { secret, response } = body;
-  const postData = `secret:${secret}\nresponse:${response}`;
+  const postData = new URLSearchParams();
+  postData.append("secret", secret);
+  postData.append("response", response);
 
-  const captchaResponse = await axios.post(
-    "https://www.google.com/recaptcha/api/siteverify",
-    postData,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
+  const url = "https://www.google.com/recaptcha/api/siteverify";
+
+  const captchaResponse = await axios.post(url, postData, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
 
   if (captchaResponse.status === 200) {
     res.status(200).json(captchaResponse.data);
