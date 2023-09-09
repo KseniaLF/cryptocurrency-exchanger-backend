@@ -7,6 +7,8 @@ const reviewStatusSchema = require("./review/reviewStatus");
 const transactionSchema = require("./transaction/transaction");
 const transactionStatusSchema = require("./transaction/transactionStatus");
 
+const captchaSchema = require("./captcha/captcha");
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -14,4 +16,5 @@ module.exports = {
   reviewStatusSchema,
   transactionSchema,
   transactionStatusSchema,
+  captchaSchema,
 };
