@@ -1,15 +1,12 @@
 const axios = require("axios");
-const querystring = require("querystring");
 const { HttpError } = require("../helpers");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 
 const postCaptcha = async (req, res, next) => {
   const body = req.body;
+
   const { secret, response } = body;
-  const postData = querystring.stringify({
-    secret,
-    response,
-  });
+  const postData = `secret:${secret}\nresponse:${response}`;
 
   const captchaResponse = await axios.post(
     "https://www.google.com/recaptcha/api/siteverify",
@@ -22,7 +19,7 @@ const postCaptcha = async (req, res, next) => {
   );
 
   if (captchaResponse.status === 200) {
-    res.status(200).json(captchaResponse);
+    res.status(200).json(captchaResponse.data);
   } else {
     throw new HttpError(
       captchaResponse.status,
