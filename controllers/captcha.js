@@ -5,7 +5,8 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 const postCaptcha = async (req, res, next) => {
   const body = req.body;
 
-  const { secret, response } = body;
+  const secret = process.env.RECAPTCHA_SERVER_KEY;
+  const { response } = body;
   const postData = new URLSearchParams();
   postData.append("secret", secret);
   postData.append("response", response);

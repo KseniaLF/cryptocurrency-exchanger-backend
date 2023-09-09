@@ -2,10 +2,6 @@ const { Schema, model } = require("mongoose");
 
 const captchaSchema = new Schema(
   {
-    secret: {
-      type: String,
-      required: true,
-    },
     response: {
       type: String,
       required: true,
