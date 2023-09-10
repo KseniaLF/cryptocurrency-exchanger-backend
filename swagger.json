@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.7.0",
+    "version": "0.8.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -19,6 +19,10 @@
     {
       "name": "Review",
       "description": "Review endpoints"
+    },
+    {
+      "name": "Exchanges",
+      "description": "Exchanges endpoints"
     }
   ],
 
@@ -387,6 +391,39 @@
           },
           "404": {
             "description": "Not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/ticker": {
+      "get": {
+        "tags": ["Exchanges"],
+        "summary": "Get TOP cryptocurrencies",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items on the page"
+          }
+        ],
+
+        "responses": {
+          "500": {
+            "description": "Error during whitebit API request.",
             "content": {}
           }
         }
