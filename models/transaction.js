@@ -8,7 +8,7 @@ const transactionSchema = new Schema(
     },
     currencyToExchange: {
       type: String,
-      enum: ["curr1", "curr2"], // need full list of possible currencies here
+      // enum: ["curr1", "curr2"], // need full list of possible currencies here
       required: [true, "Set currency to be exchanged"],
     },
     amountToReceive: {
@@ -17,7 +17,7 @@ const transactionSchema = new Schema(
     },
     currencyToReceive: {
       type: String,
-      enum: ["curr1", "curr2"], // need full list of possible currencies here
+      // enum: ["curr1", "curr2"], // need full list of possible currencies here
       required: [true, "Set currency to receive"],
     },
     status: {
