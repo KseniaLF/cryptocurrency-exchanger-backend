@@ -20,6 +20,18 @@ const transactionSchema = new Schema(
       // enum: ["curr1", "curr2"], // need full list of possible currencies here
       required: [true, "Set currency to receive"],
     },
+    paymentMethod: {
+      type: String,
+      required: true,
+      enum: ["creditCard", "walletNumber"],
+    },
+    creditCard: {
+      type: String,
+    },
+    walletNumber: {
+      type: String,
+    },
+
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
@@ -36,6 +48,13 @@ const transactionSchema = new Schema(
     timestamps: true,
   }
 );
+
+transactionSchema.path("creditCard").validate(function (value) {
+  if (!value && !this.walletNumber) {
+    return false;
+  }
+  return true;
+}, "Either creditCard or walletNumber is required.");
 
 const Transaction = model("transaction", transactionSchema);
 
