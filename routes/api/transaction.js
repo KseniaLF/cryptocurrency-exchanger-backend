@@ -6,25 +6,29 @@ const { validateBody } = require("../../middlewares");
 
 const { transactionSchema, transactionStatusSchema } = require("../../schemas");
 const { transactionController } = require("../../controllers");
-const isAdmin = require("../../middlewares/isAdmin");
+// const isAdmin = require("../../middlewares/isAdmin");
 
-router.use(authenticate);
-
-router.get("/", isAdmin, transactionController.getAllTransactions);
-
-router.get("/my", transactionController.getTransactions);
-
-router.post(
+router.get(
   "/",
-  validateBody(transactionSchema),
-  transactionController.addTransaction
+  // isAdmin,
+  transactionController.getAllTransactions
 );
 
 router.patch(
   "/:id",
-  isAdmin,
+  // isAdmin,
   validateBody(transactionStatusSchema),
   transactionController.updateStatusTransaction
+);
+
+router.use(authenticate);
+
+router.get("/my", transactionController.getTransactions);
+
+router.post(
+  "/my",
+  validateBody(transactionSchema),
+  transactionController.addTransaction
 );
 
 module.exports = router;

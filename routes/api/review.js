@@ -12,6 +12,13 @@ router.get("/", reviewController.getAllReviews);
 
 router.get("/approved", reviewController.getApprovedReviews);
 
+router.patch(
+  "/:id",
+  // isAdmin,
+  validateBody(reviewStatusSchema),
+  reviewController.updateStatusReview
+);
+
 router.use(authenticate);
 
 router.get("/my", reviewController.getReview);
@@ -19,12 +26,5 @@ router.get("/my", reviewController.getReview);
 router.post("/my", validateBody(reviewSchema), reviewController.addReview);
 
 router.delete("/my", reviewController.removeReview);
-
-router.patch(
-  "/:id",
-  // isAdmin,
-  validateBody(reviewStatusSchema),
-  reviewController.updateStatusReview
-);
 
 module.exports = router;

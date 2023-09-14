@@ -4,15 +4,31 @@ const ctrlWrapper = require("../decorators/ctrlWrapper");
 const Transaction = require("../models/transaction");
 
 const getAllTransactions = async (req, res, next) => {
-  const { page = 1, limit = 5 } = req.query;
-  const skip = (page - 1) * limit;
+  const { cursor, newest } = req.query;
+  const { limit = 2 } = req.query; // Кількість елементів на сторінці
+  const { status = "pending" } = req.query; // By default status is "pending"
 
-  const transaction = await Transaction.find()
-    .skip(skip)
-    .limit(limit)
-    .populate("owner", "email name");
+  const query = {}; // return all results
+  if (status !== "all") query.status = status; // filtering by status
 
-  res.status(200).json(transaction);
+  if (cursor) {
+    query._id = newest ? { $lt: cursor } : { $gt: cursor }; // filtering for less / more than cursor
+  }
+
+  const sort = newest ? { _id: -1 } : {};
+
+  const items = await Transaction.find(query)
+    .sort(sort)
+    .limit(Number(limit) + 1);
+
+  const nextCursor = items[limit] ? items[items.length - 2]._id : null;
+
+  if (items.length > limit) items.pop();
+
+  res.json({
+    items,
+    nextCursor,
+  });
 };
 
 const addTransaction = async (req, res, next) => {
@@ -27,7 +43,6 @@ const getTransactions = async (req, res, next) => {
   const { _id: owner } = req.user;
 
   const transaction = await Transaction.find({ owner: owner });
-  // .populate("owner", "email name");
 
   res.status(200).json(transaction);
 };

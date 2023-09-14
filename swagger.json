@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.8.0",
+    "version": "0.9.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -428,6 +428,101 @@
           }
         }
       }
+    },
+    "/api/transactions": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Get all transactions for admin",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": null
+            },
+            "description": "Cursor from previos response"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "pending"
+            },
+            "description": "Review status"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 2
+            },
+            "description": "Items on the page"
+          },
+          {
+            "name": "newest",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Review status"
+          }
+        ],
+
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/transactions/my": {
+      "get": {
+        "tags": ["Transactions"],
+        "summary": "Retrieving user's own transactions",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      },
+
+      "post": {
+        "tags": ["Transactions"],
+        "summary": "Add transactions by user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "description": "Transactions's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionRequest"
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "201": {
+            "description": "Successful created review",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -638,8 +733,20 @@
             "example": "64ec2488249ccdd3015cb71b"
           }
         }
+      },
+      "TransactionRequest": {
+        "type": "object",
+        "example": {
+          "amountToExchange": 5454,
+          "amountToReceive": 4485,
+          "currencyToReceive": "DDD",
+          "currencyToExchange": "USD",
+          "paymentMethod": "creditCard",
+          "creditCard": "45454554545455"
+        }
       }
     },
+
     "minischemas": {
       "auth": {
         "email": {
