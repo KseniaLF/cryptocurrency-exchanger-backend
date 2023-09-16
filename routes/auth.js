@@ -7,6 +7,7 @@ const {
   registerSchema,
   verifySchema,
   resendVerifySchema,
+  passwordResetSchema,
 } = require("../schemas");
 const { authController } = require("../controllers");
 
@@ -45,5 +46,13 @@ router.get("/current", authenticate, authController.getCurrent);
 router.get("/logout", authenticate, authController.logout);
 
 router.patch("/updateData", authenticate, authController.updateUserData);
+
+router.post(
+  "/passwordReset",
+  authenticate,
+  jsonParser,
+  validateBody(passwordResetSchema),
+  authController.passwordReset
+);
 
 module.exports = router;
