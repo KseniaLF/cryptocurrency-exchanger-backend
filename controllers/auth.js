@@ -2,12 +2,11 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 
-const sendEmail = require("../helpers/Mail");
 const getRandomInteger = require("../helpers/getRandomInteger");
+const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail");
 
 const jwt = require("jsonwebtoken");
 const { HttpError } = require("../helpers");
-const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail");
 const { SECRET_KEY } = process.env;
 
 const register = async (req, res, next) => {
