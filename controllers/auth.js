@@ -2,7 +2,12 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 
+const sendEmail = require("../helpers/Mail");
+const getRandomInteger = require("../helpers/getRandomInteger");
+
 const jwt = require("jsonwebtoken");
+const { HttpError } = require("../helpers");
+const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail");
 const { SECRET_KEY } = process.env;
 
 const register = async (req, res, next) => {
@@ -14,22 +19,59 @@ const register = async (req, res, next) => {
 
   const currentUser = await User.findOne({ email: user.email });
   if (currentUser !== null) {
-    return res.status(409).json({ message: "Provided email already exists" });
+    throw new HttpError(409, "Provided email already exists");
   }
 
   user.password = await bcrypt.hash(user.password, 10);
+  const verificationCode = getRandomInteger();
 
-  const userData = await User.create(user);
+  await User.create({ ...user, verificationCode });
 
-  const payload = { id: userData._id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  const emailResult = await sendVerificationEmail(user.email, verificationCode);
 
-  await User.findByIdAndUpdate(userData._id, { token });
+  if (emailResult.success) {
+    res.status(201).json({
+      user: { email: user.email },
+      message: "Verify code sent to email",
+    });
+  } else {
+    throw new Error("Email sending failed");
+  }
+};
 
-  return res.status(201).json({
-    token,
-    user: { name: user.name, email: user.email },
+const verify = async (req, res, next) => {
+  const { email, verificationCode } = req.body;
+
+  const user = await User.findOne({ email, verificationCode });
+
+  if (!user) throw new HttpError(404, "Not found");
+
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationCode: "",
   });
+
+  res.json({ message: "Verification successful" });
+};
+
+const resendVerifyEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) throw new HttpError(404, "User not found");
+
+  if (user.verify) {
+    throw new HttpError(400, "Verification has already been passed");
+  }
+
+  const emailResult = await sendVerificationEmail(email, user.verificationCode);
+
+  if (emailResult.success) {
+    res.json({ message: "Verification email sent" });
+  } else {
+    throw new Error("Email sending failed");
+  }
 };
 
 const login = async (req, res, next) => {
@@ -38,12 +80,16 @@ const login = async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (user === null) {
-    return res.status(401).json({ message: "Email or password is wrong" });
+    throw new HttpError(401, "Email or password is wrong");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (isMatch === false) {
-    return res.status(401).json({ message: "Email or password is wrong" });
+    throw new HttpError(401, "Email or password is wrong");
+  }
+
+  if (!user.verify) {
+    throw new HttpError(403, "Email not verify");
   }
 
   const { _id: id } = user;
@@ -91,6 +137,8 @@ const updateUserData = async (req, res) => {
 
 module.exports = {
   register: ctrlWrapper(register),
+  verify: ctrlWrapper(verify),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),

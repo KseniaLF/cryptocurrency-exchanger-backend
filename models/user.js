@@ -19,15 +19,20 @@ const userSchema = new mongoose.Schema(
     },
     firstName: {
       type: String,
-      default: null,
     },
     lastName: {
       type: String,
-      default: null,
     },
     middleName: {
       type: String,
-      default: null,
+    },
+
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
     },
 
     token: String,
