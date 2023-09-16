@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.9.0",
+    "version": "0.10.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -60,6 +60,66 @@
           },
           "409": {
             "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Verify user email",
+        "parameters": [],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "user@example.com",
+                "verificationCode": 458569
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification successful",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found or verify code is wrong",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/resendVerifyEmail": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Resend Verify Code",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "user@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent",
+            "content": {}
+          },
+          "400": {
+            "description": "Verification has already been passed",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
             "content": {}
           }
         }
