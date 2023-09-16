@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
+const sendEmail = require("../helpers/Mail");
 
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
@@ -18,18 +19,45 @@ const register = async (req, res, next) => {
   }
 
   user.password = await bcrypt.hash(user.password, 10);
+  const verificationCode =
+    Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-  const userData = await User.create(user);
+  await User.create({ ...user, verificationCode });
 
-  const payload = { id: userData._id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
-
-  await User.findByIdAndUpdate(userData._id, { token });
-
-  return res.status(201).json({
-    token,
-    user: { name: user.name, email: user.email },
+  sendEmail({
+    to: "ksenia.cree@gmail.com",
+    subject: "TEST MAIL",
+    html: `<p>Code: ${verificationCode}</p`,
   });
+
+  return res.status(201).json({ user: { email: user.email } });
+
+  // const payload = { id: userData._id };
+  // const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
+  // await User.findByIdAndUpdate(userData._id, { token });
+
+  // return res.status(201).json({
+  //   token,
+  //   user: { name: user.name, email: user.email },
+  // });
+};
+
+const verify = async (req, res, next) => {
+  const { verificationCode } = req.body;
+
+  const user = await User.findOne({ verificationCode });
+
+  if (user === null) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationCode: "",
+  });
+
+  res.json({ message: "Verification successful" });
 };
 
 const login = async (req, res, next) => {
@@ -44,6 +72,10 @@ const login = async (req, res, next) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (isMatch === false) {
     return res.status(401).json({ message: "Email or password is wrong" });
+  }
+
+  if (!user.verify) {
+    return res.status(403).json({ message: "Email not verify" });
   }
 
   const { _id: id } = user;
@@ -91,6 +123,7 @@ const updateUserData = async (req, res) => {
 
 module.exports = {
   register: ctrlWrapper(register),
+  verify: ctrlWrapper(verify),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),

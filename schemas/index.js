@@ -1,4 +1,5 @@
 const registerSchema = require("./auth/register");
+const verifySchema = require("./auth/verify");
 const loginSchema = require("./auth/login");
 
 const reviewSchema = require("./review/review");
@@ -11,6 +12,7 @@ const captchaSchema = require("./captcha/captcha");
 
 module.exports = {
   registerSchema,
+  verifySchema,
   loginSchema,
   reviewSchema,
   reviewStatusSchema,
