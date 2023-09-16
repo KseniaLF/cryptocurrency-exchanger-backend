@@ -41,16 +41,28 @@ const register = async (req, res, next) => {
 const verify = async (req, res, next) => {
   const { email, verificationCode } = req.body;
 
-  const user = await User.findOne({ email, verificationCode });
+  const user = await User.findOne({ email });
 
-  if (!user) throw new HttpError(404, "Not found");
+  if (!user) throw new HttpError(404, "User not found");
 
-  await User.findByIdAndUpdate(user._id, {
+  if (user.verify) {
+    throw new HttpError(400, "Verification has already been passed");
+  }
+  if (verificationCode !== Number(user.verificationCode)) {
+    throw new HttpError(403, "Verification code is wrong");
+  }
+
+  const { _id: id } = user;
+  const payload = { id };
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
+  await User.findByIdAndUpdate(id, {
+    token,
     verify: true,
     verificationCode: "",
   });
 
-  res.json({ message: "Verification successful" });
+  return res.json({ token, user: { name: user.name, email } });
 };
 
 const resendVerifyEmail = async (req, res, next) => {
@@ -72,6 +84,32 @@ const resendVerifyEmail = async (req, res, next) => {
     throw new Error("Email sending failed");
   }
 };
+
+const passwordReset = async (req, res, next) => {
+  // const { _id, email } = req.user;
+
+  // const password = await bcrypt.hash(req.body.password, 10);
+  // const verificationCode = getRandomInteger();
+
+  // const emailResult = await sendVerificationEmail(email, verificationCode);
+
+  // if (!emailResult.success) {
+  //   throw new HttpError(500, "Email sending failed");
+  // }
+
+  res.status(200).json({ message: "Verify code sent to email" });
+};
+
+// const verifyPassword = async (req, res, next) => {
+//   const { _id, email } = req.user;
+//   const { verificationCode } = req.body;
+
+//   const user = await User.findOne({ email, verificationCode });
+
+//   await User.findByIdAndUpdate(_id, { password });
+
+//   res.status(200).json({ message: "Password successfully changed" });
+// };
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -142,4 +180,5 @@ module.exports = {
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateUserData: ctrlWrapper(updateUserData),
+  passwordReset: ctrlWrapper(passwordReset),
 };

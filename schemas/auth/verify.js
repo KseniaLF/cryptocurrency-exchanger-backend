@@ -9,4 +9,8 @@ const resendVerifySchema = Joi.object({
   email: Joi.string().required(),
 });
 
-module.exports = { resendVerifySchema, verifySchema };
+const passwordResetSchema = Joi.object({
+  password: Joi.string().required(),
+});
+
+module.exports = { resendVerifySchema, verifySchema, passwordResetSchema };
