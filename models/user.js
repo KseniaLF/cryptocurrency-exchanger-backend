@@ -19,15 +19,12 @@ const userSchema = new mongoose.Schema(
     },
     firstName: {
       type: String,
-      default: null,
     },
     lastName: {
       type: String,
-      default: null,
     },
     middleName: {
       type: String,
-      default: null,
     },
 
     verify: {
@@ -36,7 +33,6 @@ const userSchema = new mongoose.Schema(
     },
     verificationCode: {
       type: String,
-      // required: [true, "Verify code is required"],
     },
 
     token: String,
