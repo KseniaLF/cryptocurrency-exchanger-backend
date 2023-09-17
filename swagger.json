@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.10.0",
+    "version": "0.11.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -125,6 +125,7 @@
         }
       }
     },
+
     "/users/login": {
       "post": {
         "tags": ["Auth"],
@@ -230,6 +231,76 @@
         "responses": {}
       }
     },
+
+    "/users/passwordReset": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Forgot Password. Request to send code.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "user@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verify code sent to email",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Email sending failed",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/verifyPassword": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Forgot Password. Verified code confirmation.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "user@example.com",
+                "verificationCode": 458569,
+                "password": "qwerty456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully changed",
+            "content": {}
+          },
+          "400": {
+            "description": "Verification code is wrong",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Email sending failed",
+            "content": {}
+          }
+        }
+      }
+    },
+
     "/api/review": {
       "get": {
         "tags": ["Review"],

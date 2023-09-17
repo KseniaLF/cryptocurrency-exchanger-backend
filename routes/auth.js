@@ -49,10 +49,16 @@ router.patch("/updateData", authenticate, authController.updateUserData);
 
 router.post(
   "/passwordReset",
-  authenticate,
+  jsonParser,
+  validateBody(resendVerifySchema),
+  authController.passwordReset
+);
+
+router.post(
+  "/verifyPassword",
   jsonParser,
   validateBody(passwordResetSchema),
-  authController.passwordReset
+  authController.verifyPassword
 );
 
 module.exports = router;
