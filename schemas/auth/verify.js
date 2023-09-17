@@ -10,6 +10,8 @@ const resendVerifySchema = Joi.object({
 });
 
 const passwordResetSchema = Joi.object({
+  email: Joi.string().required(),
+  verificationCode: Joi.number().required(),
   password: Joi.string().required(),
 });
 

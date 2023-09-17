@@ -53,7 +53,7 @@ const verify = async (req, res, next) => {
     throw new HttpError(400, "Verification has already been passed");
   }
   if (verificationCode !== Number(user.verificationCode)) {
-    throw new HttpError(403, "Verification code is wrong");
+    throw new HttpError(400, "Verification code is wrong");
   }
 
   const { _id: id } = user;
@@ -80,7 +80,13 @@ const resendVerifyEmail = async (req, res, next) => {
     throw new HttpError(400, "Verification has already been passed");
   }
 
-  const emailResult = await sendVerificationEmail(email, user.verificationCode);
+  let verificationCode = user.verificationCode;
+  if (!verificationCode) {
+    verificationCode = getRandomInteger();
+    await User.findByIdAndUpdate(user._id, { verificationCode });
+  }
+
+  const emailResult = await sendVerificationEmail(email, verificationCode);
 
   if (emailResult.success) {
     res.json({ message: "Verification email sent" });
@@ -90,30 +96,41 @@ const resendVerifyEmail = async (req, res, next) => {
 };
 
 const passwordReset = async (req, res, next) => {
-  // const { _id, email } = req.user;
+  const { email } = req.body;
+  const user = await User.findOne({ email });
 
-  // const password = await bcrypt.hash(req.body.password, 10);
-  // const verificationCode = getRandomInteger();
+  if (!user) throw new HttpError(404, "User not found");
 
-  // const emailResult = await sendVerificationEmail(email, verificationCode);
+  const verificationCode = getRandomInteger();
 
-  // if (!emailResult.success) {
-  //   throw new HttpError(500, "Email sending failed");
-  // }
+  const emailResult = await sendVerificationEmail(email, verificationCode);
 
-  res.status(200).json({ message: "Verify code sent to email" });
+  await User.findByIdAndUpdate(user._id, { verificationCode });
+
+  if (!emailResult.success) {
+    throw new HttpError(500, "Email sending failed");
+  }
+
+  res.status(200).json({ email, message: "Verify code sent to email" });
 };
 
-// const verifyPassword = async (req, res, next) => {
-//   const { _id, email } = req.user;
-//   const { verificationCode } = req.body;
+const verifyPassword = async (req, res, next) => {
+  const { email, verificationCode } = req.body;
 
-//   const user = await User.findOne({ email, verificationCode });
+  const user = await User.findOne({ email });
 
-//   await User.findByIdAndUpdate(_id, { password });
+  if (!user) throw new HttpError(404, "User not found");
 
-//   res.status(200).json({ message: "Password successfully changed" });
-// };
+  if (verificationCode !== Number(user.verificationCode)) {
+    throw new HttpError(400, "Verification code is wrong");
+  }
+
+  const password = await bcrypt.hash(req.body.password, 10);
+
+  await User.findByIdAndUpdate(user._id, { password, verificationCode: "" });
+
+  res.status(200).json({ message: "Password successfully changed" });
+};
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -180,4 +197,5 @@ module.exports = {
   logout: ctrlWrapper(logout),
   updateUserData: ctrlWrapper(updateUserData),
   passwordReset: ctrlWrapper(passwordReset),
+  verifyPassword: ctrlWrapper(verifyPassword),
 };
