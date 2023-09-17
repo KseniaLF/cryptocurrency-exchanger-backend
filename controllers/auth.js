@@ -8,6 +8,7 @@ const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail")
 const jwt = require("jsonwebtoken");
 const { HttpError } = require("../helpers");
 const { SECRET_KEY } = process.env;
+const EXPIRATION_TIME = "23h";
 
 const register = async (req, res, next) => {
   const user = {
@@ -57,7 +58,7 @@ const verify = async (req, res, next) => {
 
   const { _id: id } = user;
   const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
 
   await User.findByIdAndUpdate(id, {
     token,
@@ -118,23 +119,18 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-
-  if (user === null) {
-    throw new HttpError(401, "Email or password is wrong");
+  if (user && !user.verify) {
+    throw new HttpError(403, "Email not verified");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (isMatch === false) {
+  if (user === null || isMatch === false) {
     throw new HttpError(401, "Email or password is wrong");
-  }
-
-  if (!user.verify) {
-    throw new HttpError(403, "Email not verify");
   }
 
   const { _id: id } = user;
   const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
 
   await User.findByIdAndUpdate(id, { token });
 
