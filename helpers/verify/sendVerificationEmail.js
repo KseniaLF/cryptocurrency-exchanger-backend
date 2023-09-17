@@ -1,3 +1,4 @@
+const HttpError = require("../HttpError");
 const sendEmail = require("../Mail");
 
 const sendVerificationEmail = async (to, verificationCode) => {
@@ -8,9 +9,9 @@ const sendVerificationEmail = async (to, verificationCode) => {
       html: `<p>Code: ${verificationCode}</p`,
     });
 
-    return { success: true };
+    return true;
   } catch (error) {
-    return { success: false, error };
+    throw new HttpError(500, "Email sending failed");
   }
 };
 

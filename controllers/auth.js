@@ -16,8 +16,9 @@ const register = async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
   };
+  const email = user.email;
 
-  const currentUser = await User.findOne({ email: user.email });
+  const currentUser = await User.findOne({ email });
   if (currentUser !== null && currentUser.verify) {
     throw new HttpError(409, "Provided email already exists");
   }
@@ -30,16 +31,12 @@ const register = async (req, res, next) => {
 
   await User.create({ ...user, verificationCode });
 
-  const emailResult = await sendVerificationEmail(user.email, verificationCode);
+  await sendVerificationEmail(email, verificationCode);
 
-  if (emailResult.success) {
-    res.status(201).json({
-      user: { email: user.email },
-      message: "Verify code sent to email",
-    });
-  } else {
-    throw new Error("Email sending failed");
-  }
+  res.status(201).json({
+    user: { email },
+    message: "Verify code sent to email",
+  });
 };
 
 const verify = async (req, res, next) => {
@@ -80,19 +77,12 @@ const resendVerifyEmail = async (req, res, next) => {
     throw new HttpError(400, "Verification has already been passed");
   }
 
-  let verificationCode = user.verificationCode;
-  if (!verificationCode) {
-    verificationCode = getRandomInteger();
-    await User.findByIdAndUpdate(user._id, { verificationCode });
-  }
+  const verificationCode = getRandomInteger();
+  await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  const emailResult = await sendVerificationEmail(email, verificationCode);
+  await sendVerificationEmail(email, verificationCode);
 
-  if (emailResult.success) {
-    res.json({ message: "Verification email sent" });
-  } else {
-    throw new Error("Email sending failed");
-  }
+  res.json({ message: "Verification email sent" });
 };
 
 const passwordReset = async (req, res, next) => {
@@ -103,13 +93,9 @@ const passwordReset = async (req, res, next) => {
 
   const verificationCode = getRandomInteger();
 
-  const emailResult = await sendVerificationEmail(email, verificationCode);
-
   await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  if (!emailResult.success) {
-    throw new HttpError(500, "Email sending failed");
-  }
+  await sendVerificationEmail(email, verificationCode);
 
   res.status(200).json({ email, message: "Verify code sent to email" });
 };
