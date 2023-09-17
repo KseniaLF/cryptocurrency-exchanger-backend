@@ -17,8 +17,11 @@ const register = async (req, res, next) => {
   };
 
   const currentUser = await User.findOne({ email: user.email });
-  if (currentUser !== null) {
+  if (currentUser !== null && currentUser.verify) {
     throw new HttpError(409, "Provided email already exists");
+  }
+  if (currentUser && !currentUser.verify) {
+    throw new HttpError(403, "User needs to complete verification");
   }
 
   user.password = await bcrypt.hash(user.password, 10);
