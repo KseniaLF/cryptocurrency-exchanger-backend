@@ -162,6 +162,7 @@ const getCurrent = async (req, res) => {
   const { user } = req;
 
   res.json({
+    id: user._id,
     email: user.email,
     role: user.role,
     name: user.name,
