@@ -1,7 +1,7 @@
 const HttpError = require("../HttpError");
-const sendEmail = require("../Mail");
+const sendEmail = require("./sendEmail");
 
-const sendVerificationEmail = async (to, verificationCode) => {
+const sendVerificationCode = async (to, verificationCode) => {
   try {
     await sendEmail({
       to,
@@ -15,4 +15,4 @@ const sendVerificationEmail = async (to, verificationCode) => {
   }
 };
 
-module.exports = sendVerificationEmail;
+module.exports = sendVerificationCode;

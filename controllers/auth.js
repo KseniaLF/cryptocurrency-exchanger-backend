@@ -2,13 +2,12 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 
-const getRandomInteger = require("../helpers/getRandomInteger");
-const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail");
-
-const jwt = require("jsonwebtoken");
-const { HttpError } = require("../helpers");
-const { SECRET_KEY } = process.env;
-const EXPIRATION_TIME = "23h";
+const {
+  HttpError,
+  generateTokens,
+  getRandomInteger,
+  sendVerificationCode,
+} = require("../helpers");
 
 const register = async (req, res, next) => {
   const user = {
@@ -31,7 +30,7 @@ const register = async (req, res, next) => {
 
   await User.create({ ...user, verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.status(201).json({
     user: { email },
@@ -54,16 +53,16 @@ const verify = async (req, res, next) => {
   }
 
   const { _id: id } = user;
-  const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
+  const { token, refreshToken } = generateTokens(id);
 
   await User.findByIdAndUpdate(id, {
     token,
+    refreshToken,
     verify: true,
     verificationCode: "",
   });
 
-  return res.json({ token, user: { name: user.name, email } });
+  return res.json({ token, refreshToken, user: { name: user.name, email } });
 };
 
 const resendVerifyEmail = async (req, res, next) => {
@@ -80,7 +79,7 @@ const resendVerifyEmail = async (req, res, next) => {
   const verificationCode = getRandomInteger();
   await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.json({ message: "Verification email sent" });
 };
@@ -95,7 +94,7 @@ const passwordReset = async (req, res, next) => {
 
   await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.status(200).json({ email, message: "Verify code sent to email" });
 };
@@ -132,12 +131,15 @@ const login = async (req, res, next) => {
   }
 
   const { _id: id } = user;
-  const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
+  const { token, refreshToken } = generateTokens(id);
 
-  await User.findByIdAndUpdate(id, { token });
+  await User.findByIdAndUpdate(id, { token, refreshToken });
 
-  return res.json({ token, user: { name: user.name, email } });
+  return res.json({
+    token,
+    refreshToken,
+    user: { name: user.name, email },
+  });
 };
 
 const getCurrent = async (req, res) => {
