@@ -1,7 +1,7 @@
 const registerSchema = require("./auth/register");
 const verifySchema = require("./auth/verify");
 
-const loginSchema = require("./auth/login");
+const { loginSchema, refreshSchema } = require("./auth/login");
 
 const reviewSchema = require("./review/review");
 const reviewStatusSchema = require("./review/reviewStatus");
@@ -17,6 +17,7 @@ module.exports = {
   resendVerifySchema: verifySchema.resendVerifySchema,
   passwordResetSchema: verifySchema.passwordResetSchema,
   loginSchema,
+  refreshSchema,
   reviewSchema,
   reviewStatusSchema,
   transactionSchema,

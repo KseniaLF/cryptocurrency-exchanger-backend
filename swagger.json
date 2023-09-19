@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.11.0",
+    "version": "0.12.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -160,10 +160,42 @@
           "401": {
             "description": "Email or password is wrong",
             "content": {}
+          },
+          "403": {
+            "description": "Email not verified",
+            "content": {}
           }
         }
       }
     },
+    "/users/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Call if front get 403 status",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "refreshToken": "Refresh TOKEN"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "You get new access and refresh tokens",
+            "content": {}
+          },
+          "403": {
+            "description": "Token invalid, go to login page",
+            "content": {}
+          }
+        }
+      }
+    },
+
     "/users/current": {
       "get": {
         "tags": ["Auth"],

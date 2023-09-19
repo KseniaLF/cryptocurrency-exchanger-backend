@@ -4,6 +4,7 @@ const router = express.Router();
 const { authenticate, validateBody } = require("../middlewares");
 const {
   loginSchema,
+  refreshSchema,
   registerSchema,
   verifySchema,
   resendVerifySchema,
@@ -39,6 +40,13 @@ router.post(
   jsonParser,
   validateBody(loginSchema),
   authController.login
+);
+
+router.post(
+  "/refresh",
+  jsonParser,
+  validateBody(refreshSchema),
+  authController.refresh
 );
 
 router.get("/current", authenticate, authController.getCurrent);

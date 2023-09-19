@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
+const jwt = require("jsonwebtoken");
 
 const {
   HttpError,
@@ -142,6 +143,24 @@ const login = async (req, res, next) => {
   });
 };
 
+const refresh = async (req, res, next) => {
+  const { refreshToken: refToken } = req.body;
+  const { REFRECH_SECRET_KEY } = process.env;
+
+  try {
+    const { id } = jwt.verify(refToken, REFRECH_SECRET_KEY);
+    const isExist = await User.findOne({ refreshToken: refToken });
+    if (!isExist) {
+      throw new HttpError(403, "Token invalid");
+    }
+
+    const { token, refreshToken } = generateTokens(id);
+    res.json({ token, refreshToken });
+  } catch (err) {
+    throw new HttpError(403, err.message);
+  }
+};
+
 const getCurrent = async (req, res) => {
   const { user } = req;
 
@@ -161,7 +180,7 @@ const getCurrent = async (req, res) => {
 const logout = async (req, res) => {
   const { _id } = req.user;
 
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: "", refreshToken: "" });
 
   res.status(204).end();
 };
@@ -181,6 +200,7 @@ module.exports = {
   verify: ctrlWrapper(verify),
   resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
+  refresh: ctrlWrapper(refresh),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateUserData: ctrlWrapper(updateUserData),
