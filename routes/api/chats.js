@@ -11,7 +11,6 @@ const { chatController } = require("../../controllers");
 
 // router.get("/all", isAdmin, chatController.getAllMessages);
 
-router.get("/all", chatController.getAllUsers);
 
 router.post("/addmsg/", chatController.addMessage);
 router.post("/getmsg/", chatController.getMessages);
