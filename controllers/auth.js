@@ -44,13 +44,10 @@ const verify = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "Not found");
 
-  if (user.verify) {
-    throw new HttpError(400, "Verification has already been passed");
-  }
-  if (verificationCode !== Number(user.verificationCode)) {
-    throw new HttpError(400, "Verification code is wrong");
+  if (user.verify || verificationCode !== Number(user.verificationCode)) {
+    throw new HttpError(400, "Code is wrong");
   }
 
   const { _id: id } = user;
@@ -71,7 +68,7 @@ const resendVerifyEmail = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "Not found");
 
   if (user.verify) {
     throw new HttpError(400, "Verification has already been passed");

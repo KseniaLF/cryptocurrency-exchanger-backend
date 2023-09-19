@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.12.0",
+    "version": "0.12.1",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -58,8 +58,16 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
+          "403": {
+            "description": "User needs to complete verification",
+            "content": {}
+          },
           "409": {
             "description": "Provided email already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Email sending failed",
             "content": {}
           }
         }
@@ -71,7 +79,6 @@
         "summary": "Verify user email",
         "parameters": [],
         "requestBody": {
-          "description": "Registration's object",
           "required": true,
           "content": {
             "application/json": {
@@ -87,8 +94,12 @@
             "description": "Verification successful",
             "content": {}
           },
+          "400": {
+            "description": "Code is wrong",
+            "content": {}
+          },
           "404": {
-            "description": "User not found or verify code is wrong",
+            "description": "User not found",
             "content": {}
           }
         }
@@ -708,11 +719,10 @@
       "RegistrationResponse": {
         "type": "array",
         "example": {
-          "token": "rsgr456sbert",
           "user": {
-            "name": "User Name",
-            "email": "user@example.com"
-          }
+            "email": "user123@example"
+          },
+          "message": "Verify code sent to email"
         }
       },
       "LoginRequest": {
