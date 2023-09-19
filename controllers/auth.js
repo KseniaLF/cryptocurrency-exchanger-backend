@@ -1,14 +1,14 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
-
-const getRandomInteger = require("../helpers/getRandomInteger");
-const sendVerificationEmail = require("../helpers/verify/sendVerificationEmail");
-
 const jwt = require("jsonwebtoken");
-const { HttpError } = require("../helpers");
-const { SECRET_KEY } = process.env;
-const EXPIRATION_TIME = "23h";
+
+const {
+  HttpError,
+  generateTokens,
+  getRandomInteger,
+  sendVerificationCode,
+} = require("../helpers");
 
 const register = async (req, res, next) => {
   const user = {
@@ -31,7 +31,7 @@ const register = async (req, res, next) => {
 
   await User.create({ ...user, verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.status(201).json({
     user: { email },
@@ -44,26 +44,23 @@ const verify = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "Not found");
 
-  if (user.verify) {
-    throw new HttpError(400, "Verification has already been passed");
-  }
-  if (verificationCode !== Number(user.verificationCode)) {
-    throw new HttpError(400, "Verification code is wrong");
+  if (user.verify || verificationCode !== Number(user.verificationCode)) {
+    throw new HttpError(400, "Code is wrong");
   }
 
   const { _id: id } = user;
-  const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
+  const { token, refreshToken } = generateTokens(id);
 
   await User.findByIdAndUpdate(id, {
     token,
+    refreshToken,
     verify: true,
     verificationCode: "",
   });
 
-  return res.json({ token, user: { name: user.name, email } });
+  return res.json({ token, refreshToken, user: { name: user.name, email } });
 };
 
 const resendVerifyEmail = async (req, res, next) => {
@@ -71,7 +68,7 @@ const resendVerifyEmail = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) throw new HttpError(404, "User not found");
+  if (!user) throw new HttpError(404, "Not found");
 
   if (user.verify) {
     throw new HttpError(400, "Verification has already been passed");
@@ -80,7 +77,7 @@ const resendVerifyEmail = async (req, res, next) => {
   const verificationCode = getRandomInteger();
   await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.json({ message: "Verification email sent" });
 };
@@ -95,7 +92,7 @@ const passwordReset = async (req, res, next) => {
 
   await User.findByIdAndUpdate(user._id, { verificationCode });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationCode(email, verificationCode);
 
   res.status(200).json({ email, message: "Verify code sent to email" });
 };
@@ -132,18 +129,40 @@ const login = async (req, res, next) => {
   }
 
   const { _id: id } = user;
-  const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION_TIME });
+  const { token, refreshToken } = generateTokens(id);
 
-  await User.findByIdAndUpdate(id, { token });
+  await User.findByIdAndUpdate(id, { token, refreshToken });
 
-  return res.json({ token, user: { name: user.name, email } });
+  return res.json({
+    token,
+    refreshToken,
+    user: { name: user.name, email },
+  });
+};
+
+const refresh = async (req, res, next) => {
+  const { refreshToken: refToken } = req.body;
+  const { REFRECH_SECRET_KEY } = process.env;
+
+  try {
+    const { id } = jwt.verify(refToken, REFRECH_SECRET_KEY);
+    const isExist = await User.findOne({ refreshToken: refToken });
+    if (!isExist) {
+      throw new HttpError(403, "Token invalid");
+    }
+
+    const { token, refreshToken } = generateTokens(id);
+    res.json({ token, refreshToken });
+  } catch (err) {
+    throw new HttpError(403, err.message);
+  }
 };
 
 const getCurrent = async (req, res) => {
   const { user } = req;
 
   res.json({
+    id: user._id,
     email: user.email,
     role: user.role,
     name: user.name,
@@ -159,7 +178,7 @@ const getCurrent = async (req, res) => {
 const logout = async (req, res) => {
   const { _id } = req.user;
 
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: "", refreshToken: "" });
 
   res.status(204).end();
 };
@@ -179,6 +198,7 @@ module.exports = {
   verify: ctrlWrapper(verify),
   resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
+  refresh: ctrlWrapper(refresh),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
   updateUserData: ctrlWrapper(updateUserData),

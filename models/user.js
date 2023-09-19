@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema(
     },
 
     token: String,
+    refreshToken: String,
   },
   {
     versionKey: false,
