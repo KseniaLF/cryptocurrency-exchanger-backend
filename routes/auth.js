@@ -11,8 +11,11 @@ const {
   passwordResetSchema,
 } = require("../schemas");
 const { authController } = require("../controllers");
+const { chatController } = require("../controllers");
 
 const jsonParser = express.json();
+
+router.get("/all", chatController.getAllUsers);
 
 router.post(
   "/register",
