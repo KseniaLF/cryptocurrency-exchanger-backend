@@ -23,12 +23,12 @@ const transactionSchema = new Schema(
     paymentMethod: {
       type: String,
       required: true,
-      enum: ["creditCard", "walletNumber"],
+      enum: ["creditCard", "wallet"],
     },
     creditCard: {
       type: String,
     },
-    walletNumber: {
+    wallet: {
       type: String,
     },
 
@@ -50,11 +50,11 @@ const transactionSchema = new Schema(
 );
 
 transactionSchema.path("creditCard").validate(function (value) {
-  if (!value && !this.walletNumber) {
+  if (!value && !this.wallet) {
     return false;
   }
   return true;
-}, "Either creditCard or walletNumber is required.");
+}, "Either creditCard or wallet is required.");
 
 const Transaction = model("transaction", transactionSchema);
 

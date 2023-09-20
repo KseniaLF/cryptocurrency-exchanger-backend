@@ -6,9 +6,9 @@ const transactionSchema = Joi.object({
   currencyToExchange: Joi.string().required(),
   currencyToReceive: Joi.string().required(),
   // acceptTerms: Joi.boolean().valid(true).required(),
-  paymentMethod: Joi.string().valid("creditCard", "walletNumber").required(),
+  paymentMethod: Joi.string().valid("creditCard", "wallet").required(),
   creditCard: Joi.string() /* .creditCard() */,
-  walletNumber: Joi.string(),
-}).xor("creditCard", "walletNumber");
+  wallet: Joi.string(),
+}).xor("creditCard", "wallet");
 
 module.exports = transactionSchema;
