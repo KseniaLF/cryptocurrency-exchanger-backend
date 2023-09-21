@@ -57,18 +57,34 @@ app.use((err, req, res, next) => {
 });
 
 
-const onlineUsers = [];
+// const onlineUsers = [];
 
+// io.on("connection", (socket) => {
+//   console.log("User connected");
+//   // add new user
+//   socket.on("add-user", (newUserId) => {
+//     // if (!onlineUsers.some((user) => user.userId === newUserId)) {  // if user is not added before
+//     //   onlineUsers.push({ userId: newUserId, socketId: socket.id });
+//     //   console.log("new user is here!", onlineUsers);
+//     // }
+//      onlineUsers.push({ userId: newUserId, socketId: socket.id });
+//       console.log("new user is here!", onlineUsers);
+//   });
+
+//   socket.on("send-msg", (data) => {
+//     const sendUserSocket = onlineUsers.get(data.to);
+//     if (sendUserSocket) {
+//       socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+//     }
+//   });
+// });
+
+const onlineUsers = new Map();
 io.on("connection", (socket) => {
-  console.log("User connected");
-  // add new user
-  socket.on("add-user", (newUserId) => {
-    // if (!onlineUsers.some((user) => user.userId === newUserId)) {  // if user is not added before
-    //   onlineUsers.push({ userId: newUserId, socketId: socket.id });
-    //   console.log("new user is here!", onlineUsers);
-    // }
-     onlineUsers.push({ userId: newUserId, socketId: socket.id });
-      console.log("new user is here!", onlineUsers);
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);
+console.log(onlineUsers);
   });
 
   socket.on("send-msg", (data) => {

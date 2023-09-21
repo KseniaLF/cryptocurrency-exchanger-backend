@@ -13,7 +13,7 @@ const { chatController } = require("../../controllers");
 
 
 router.post("/addmsg/", chatController.addMessage);
-router.post("/getmsg/", chatController.getMessages);
+router.get("/getmsg/", chatController.getMessages);
 
 router.use(authenticate);
 
