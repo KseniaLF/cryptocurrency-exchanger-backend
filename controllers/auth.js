@@ -151,10 +151,10 @@ const refresh = async (req, res, next) => {
       throw new HttpError(403, "Token invalid");
     }
 
-    const { token } = generateTokens(id);
-    await User.findByIdAndUpdate(id, { token });
+    const { token, refreshToken } = generateTokens(id);
+    await User.findByIdAndUpdate(id, { token, refreshToken });
 
-    res.json({ token });
+    res.json({ token, refreshToken });
   } catch (err) {
     throw new HttpError(403, err.message);
   }
