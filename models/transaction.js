@@ -31,6 +31,9 @@ const transactionSchema = new Schema(
     wallet: {
       type: String,
     },
+    cash: {
+      type: String,
+    },
 
     status: {
       type: String,
@@ -50,11 +53,11 @@ const transactionSchema = new Schema(
 );
 
 transactionSchema.path("creditCard").validate(function (value) {
-  if (!value && !this.wallet) {
+  if (!value && !this.wallet && !this.cash) {
     return false;
   }
   return true;
-}, "Either creditCard or wallet is required.");
+}, "Either credit card, wallet, or cash is required.");
 
 const Transaction = model("transaction", transactionSchema);
 
