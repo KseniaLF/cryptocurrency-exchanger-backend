@@ -3,7 +3,8 @@ const reviewController = require("./review");
 const transactionController = require("./transaction");
 const captchaController = require("./captcha");
 const tickerController = require("./ticker");
-const chatController = require ("./chat")
+const chatController = require("./chat");
+const newsController = require("./news");
 
 module.exports = {
   authController,
@@ -11,5 +12,6 @@ module.exports = {
   transactionController,
   captchaController,
   tickerController,
-  chatController
+  chatController,
+  newsController,
 };

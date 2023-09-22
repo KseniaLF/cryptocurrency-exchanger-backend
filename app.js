@@ -2,9 +2,8 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
-const socket = require("socket.io");
+// const socket = require("socket.io");
 const { Server } = require("socket.io");
-
 
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/api/review");
@@ -12,6 +11,7 @@ const transactionRouter = require("./routes/api/transaction");
 const captchaRouter = require("./routes/api/captcha");
 const tickerRouter = require("./routes/api/ticker");
 const chatRouter = require("./routes/api/chats");
+const newsRouter = require("./routes/api/news");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -36,6 +36,8 @@ app.use("/captcha", captchaRouter);
 
 app.use("/api/ticker", tickerRouter);
 
+app.use("/api/news", newsRouter);
+
 app.use("/api/chat", chatRouter);
 
 app.use((req, res) => {
@@ -47,23 +49,21 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-
 //  const io = new Server(3002, {
 //   cors: {
-//      origin: "http://localhost:3000", 
+//      origin: "http://localhost:3000",
 //      methods: ["GET", "POST"],
 //     credentials: true
 //     },
 // });
 
- const io = new Server(3002, {
+const io = new Server(3002, {
   cors: {
-     origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/", 
-     methods: ["GET", "POST"],
-    credentials: true
-    },
+    origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
-
 
 const onlineUsers = new Map();
 io.on("connection", (socket) => {
