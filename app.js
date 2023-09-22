@@ -48,36 +48,22 @@ app.use((err, req, res, next) => {
 });
 
 
+//  const io = new Server(3002, {
+//   cors: {
+//      origin: "http://localhost:3000", 
+//      methods: ["GET", "POST"],
+//     credentials: true
+//     },
+// });
+
  const io = new Server(3002, {
   cors: {
-     origin: "http://localhost:3000", 
+     origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/", 
      methods: ["GET", "POST"],
     credentials: true
     },
 });
 
-
-// const onlineUsers = [];
-
-// io.on("connection", (socket) => {
-//   console.log("User connected");
-//   // add new user
-//   socket.on("add-user", (newUserId) => {
-//     // if (!onlineUsers.some((user) => user.userId === newUserId)) {  // if user is not added before
-//     //   onlineUsers.push({ userId: newUserId, socketId: socket.id });
-//     //   console.log("new user is here!", onlineUsers);
-//     // }
-//      onlineUsers.push({ userId: newUserId, socketId: socket.id });
-//       console.log("new user is here!", onlineUsers);
-//   });
-
-//   socket.on("send-msg", (data) => {
-//     const sendUserSocket = onlineUsers.get(data.to);
-//     if (sendUserSocket) {
-//       socket.to(sendUserSocket).emit("msg-recieve", data.msg);
-//     }
-//   });
-// });
 
 const onlineUsers = new Map();
 io.on("connection", (socket) => {
