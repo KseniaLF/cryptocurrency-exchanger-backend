@@ -11,6 +11,7 @@ const reviewStatusSchema = require("./review/reviewStatus");
 
 const transactionSchema = require("./transaction/transaction");
 const transactionStatusSchema = require("./transaction/transactionStatus");
+const newsSchema = require("./news/news");
 
 const captchaSchema = require("./captcha/captcha");
 
@@ -27,4 +28,5 @@ module.exports = {
   transactionSchema,
   transactionStatusSchema,
   captchaSchema,
+  newsSchema,
 };

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "version": "0.12.1",
+    "version": "0.13.0",
     "title": "Cryptocurrency exchanger",
     "description": "Cryptocurrency exchanger's API"
   },
@@ -23,6 +23,10 @@
     {
       "name": "Exchanges",
       "description": "Exchanges endpoints"
+    },
+    {
+      "name": "News",
+      "description": "News endpoints"
     }
   ],
 
@@ -693,6 +697,138 @@
           },
           "401": {
             "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/news": {
+      "get": {
+        "tags": ["News"],
+        "summary": "Get all news",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Items on the page"
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": ["News"],
+        "summary": "Add news for admins",
+
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "title",
+                "description": "description",
+                "content": "content",
+                "tag": "crypto",
+                "image": "https/ image link"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful created news",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/news/{id}": {
+      "put": {
+        "tags": ["News"],
+        "summary": "Update news data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "title",
+                "description": "description",
+                "content": "content",
+                "tag": "crypto",
+                "image": "https/ image link"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "News data updated successfully",
+            "content": {}
+          },
+          "404": {
+            "description": "News not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["News"],
+        "summary": "Delete news for admins",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "News is successful deleted",
+            "content": {}
+          },
+          "404": {
+            "description": " news Not found",
             "content": {}
           }
         }
