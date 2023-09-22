@@ -15,7 +15,7 @@ const getMessages = async (req, res, next) => {
 
     const allMessages = messages.map(msg => {
       return {
-        fromSelf: msg.sender._id === from,
+        fromSelf: msg.sender.toString() === from ,
         from: from,
         to: to,
         message: msg.message.text,
