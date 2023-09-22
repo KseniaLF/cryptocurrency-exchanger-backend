@@ -13,4 +13,8 @@ router.use(authenticate);
 
 router.post("/", validateBody(newsSchema), newsController.addNews);
 
+router.put("/:id", validateBody(newsSchema), newsController.updateNews);
+
+router.delete("/:id", newsController.deleteNews);
+
 module.exports = router;

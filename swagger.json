@@ -734,10 +734,9 @@
           }
         }
       },
-
       "post": {
         "tags": ["News"],
-        "summary": "Add news",
+        "summary": "Add news for admins",
 
         "parameters": [],
         "security": [{ "Bearer": [] }],
@@ -747,7 +746,11 @@
           "content": {
             "application/json": {
               "example": {
-                "title": "HOOHOHOHHOHOHOHOHOOH GO"
+                "title": "title",
+                "description": "description",
+                "content": "content",
+                "tag": "crypto",
+                "image": "https/ image link"
               }
             }
           }
@@ -762,22 +765,70 @@
             "content": {}
           }
         }
-      },
-
-      "delete": {
-        "tags": ["Review"],
-        "summary": "Delete my review",
-
-        "parameters": [],
+      }
+    },
+    "/api/news/{id}": {
+      "put": {
+        "tags": ["News"],
+        "summary": "Update news data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [{ "Bearer": [] }],
 
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "title": "title",
+                "description": "description",
+                "content": "content",
+                "tag": "crypto",
+                "image": "https/ image link"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Your review is successful deleted",
+            "description": "News data updated successfully",
             "content": {}
           },
           "404": {
-            "description": "Not found",
+            "description": "News not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["News"],
+        "summary": "Delete news for admins",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+
+        "responses": {
+          "204": {
+            "description": "News is successful deleted",
+            "content": {}
+          },
+          "404": {
+            "description": " news Not found",
             "content": {}
           }
         }

@@ -1,4 +1,3 @@
-// const { HttpError } = require("../helpers");
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 const News = require("../models/news");
 
@@ -9,6 +8,15 @@ const addNews = async (req, res, next) => {
   const newTransaction = await News.create({ ...body, owner });
 
   res.status(201).json(newTransaction);
+};
+
+const updateNews = async (req, res, next) => {
+  const { id } = req.params;
+  const body = req.body;
+
+  const updatedNews = await News.findByIdAndUpdate(id, body, { new: true });
+
+  res.status(200).json(updatedNews);
 };
 
 const getNews = async (req, res, next) => {
@@ -29,7 +37,14 @@ const getNews = async (req, res, next) => {
   });
 };
 
+const deleteNews = async (req, res, next) => {
+  await News.findByIdAndRemove(req.params.id);
+  res.status(204).end();
+};
+
 module.exports = {
   addNews: ctrlWrapper(addNews),
   getNews: ctrlWrapper(getNews),
+  updateNews: ctrlWrapper(updateNews),
+  deleteNews: ctrlWrapper(deleteNews),
 };
