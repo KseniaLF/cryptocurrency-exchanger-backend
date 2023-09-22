@@ -12,9 +12,21 @@ const addNews = async (req, res, next) => {
 };
 
 const getNews = async (req, res, next) => {
-  const allNews = await News.find().populate("owner", "name");
+  const { page = 1, limit = 5 } = req.query;
+  const skip = (page - 1) * limit;
 
-  res.json(allNews);
+  const totalNews = await News.countDocuments({});
+
+  const news = await News.find()
+    .skip(skip)
+    .limit(limit)
+    .populate("owner", "name");
+
+  res.json({
+    news,
+    currentPage: Number(page),
+    totalPages: Math.ceil(totalNews / limit),
+  });
 };
 
 module.exports = {

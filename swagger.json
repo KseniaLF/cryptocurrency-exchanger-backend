@@ -706,7 +706,26 @@
       "get": {
         "tags": ["News"],
         "summary": "Get all news",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Number of page"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Items on the page"
+          }
+        ],
 
         "responses": {
           "200": {
