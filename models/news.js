@@ -6,6 +6,19 @@ const newsSchema = new Schema(
       type: String,
       required: [true, "Set title"],
     },
+    description: {
+      type: String,
+      required: [true, "Set description"],
+    },
+    content: {
+      type: String,
+    },
+    tag: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
