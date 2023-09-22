@@ -12,16 +12,18 @@ const getMessages = async (req, res, next) => {
         $all: [from, to],
       },
     }).sort({ updatedAt: 1 });
-      
-      const allMessages= messages.map((msg) => {
-          return {
-          fromSelf: msg.sender._id === from,
-          from: from,
-          to: to,
-          message: msg.message.text,
-          time:msg.createdAt
 
-      res.json(allMessages);
+    const allMessages = messages.map(msg => {
+      return {
+        fromSelf: msg.sender._id === from,
+        from: from,
+        to: to,
+        message: msg.message.text,
+        time: msg.createdAt,
+      };
+    });
+
+    res.json(allMessages);
   } catch (ex) {
     next(ex);
   }
