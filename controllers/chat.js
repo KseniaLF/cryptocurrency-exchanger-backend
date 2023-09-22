@@ -1,10 +1,7 @@
-
 const ctrlWrapper = require("../decorators/ctrlWrapper");
 
 const Message = require("../models/message");
-const User = require('../models/user');
-
-
+const User = require("../models/user");
 
 const getMessages = async (req, res, next) => {
   try {
@@ -16,7 +13,7 @@ const getMessages = async (req, res, next) => {
       },
     }).sort({ updatedAt: 1 });
 
-    const projectedMessages = messages.map((msg) => {
+    const projectedMessages = messages.map(msg => {
       return {
         fromSelf: msg.sender.toString() === from,
         message: msg.message.text,
@@ -44,21 +41,17 @@ const addMessage = async (req, res, next) => {
   }
 };
 
-
 const getAllUsers = async (req, res, next) => {
   const { limit = 10 } = req.query;
 
-  const items = await User.find()
-    .sort("_id")
-    .limit(limit)
-    
-    // .populate("message", "_id status createdAt users");
+  const items = await User.find().sort("_id").limit(limit);
+
+  // .populate("message", "_id status createdAt users");
 
   res.json({
-    items
+    items,
   });
 };
-
 
 const getUserMessages = async (req, res, next) => {
   const { _id: owner } = req.user;
@@ -68,13 +61,9 @@ const getUserMessages = async (req, res, next) => {
   res.status(200).json(messages);
 };
 
-
-
-
 module.exports = {
-    getAllUsers: ctrlWrapper(getAllUsers),
-    getUserMessages: ctrlWrapper(getUserMessages),
-    getMessages: ctrlWrapper(getMessages),
-    addMessage: ctrlWrapper(addMessage)
- 
+  getAllUsers: ctrlWrapper(getAllUsers),
+  getUserMessages: ctrlWrapper(getUserMessages),
+  getMessages: ctrlWrapper(getMessages),
+  addMessage: ctrlWrapper(addMessage),
 };
