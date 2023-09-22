@@ -16,13 +16,25 @@ const getMessages = async (req, res, next) => {
       },
     }).sort({ updatedAt: 1 });
 
-    const projectedMessages = messages.map((msg) => {
-      return {
-        fromSelf: msg.sender.toString() === from,
-        message: msg.message.text,
+    // const projectedMessages = messages.map((msg) => {
+    //   return {
+    //     fromSelf: msg.sender.toString() === from,
+    //     message: msg.message.text,
+    //   };
+    // });
+      
+      const allMessages= messages.map((msg) => {
+          return {
+          fromSelf: msg.sender._id === from,
+          from: from,
+          to: to,
+          message: msg.message.text,
+          time:msg.createdAt
       };
     });
-    res.json(projectedMessages);
+      
+      res.json(allMessages);
+    // res.json(projectedMessages);
   } catch (ex) {
     next(ex);
   }
