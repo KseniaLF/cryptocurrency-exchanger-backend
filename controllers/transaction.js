@@ -5,7 +5,7 @@ const Transaction = require("../models/transaction");
 
 const getAllTransactions = async (req, res, next) => {
   const { cursor, newest } = req.query;
-  const { limit = 2 } = req.query; // Кількість елементів на сторінці
+  const { limit = 6 } = req.query; // Кількість елементів на сторінці
   const { status = "pending" } = req.query; // By default status is "pending"
 
   const query = {}; // return all results
