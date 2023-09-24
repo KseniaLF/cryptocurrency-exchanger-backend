@@ -7,9 +7,9 @@ const getApprovedReviews = async (req, res, next) => {
   const { page = 1, limit = 5 } = req.query;
   const skip = (page - 1) * limit;
 
-  const totalReviews = await Review.countDocuments({});
+  const totalReviews = await Review.countDocuments({ status: "accepted" });
 
-  const reviews = await Review.find()
+  const reviews = await Review.find({ status: "accepted" })
     .skip(skip)
     .limit(limit)
     .populate("owner", "_id createdAt name");
