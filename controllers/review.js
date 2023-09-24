@@ -23,7 +23,7 @@ const getApprovedReviews = async (req, res, next) => {
 
 const getAllReviews = async (req, res, next) => {
   const { cursor } = req.query;
-  const { limit = 2 } = req.query; // Кількість елементів на сторінці
+  const { limit = 6 } = req.query; // Кількість елементів на сторінці
   const { status = "pending" } = req.query; // By default status is "pending"
 
   let query = { status }; // Initial request for filtering by status
