@@ -2,8 +2,10 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
-// const socket = require("socket.io");
-const { Server } = require("socket.io");
+
+const mongoose = require("mongoose");
+const { DB_HOST } = process.env;
+mongoose.set("strictQuery", true);
 
 const authRouter = require("./routes/auth");
 const reviewRouter = require("./routes/api/review");
@@ -17,6 +19,34 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
 const app = express();
+
+const server = app.listen(3001);
+
+mongoose
+  .connect(DB_HOST)
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((error) => {
+    console.log(error.message);
+    process.exit(1);
+  });
+
+// const io = require("socket.io")(server, {
+//   cors: {
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -49,52 +79,43 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-// const io = new Server(3002, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//     credentials: true,
-//   },
-// });
 
-const io = new Server(3002, {
-  cors: {
-    origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
 
 let onlineUsers = [];
 
 io.on("connection", (socket) => {
   // add new user
-  socket.on("add-user", (newUserId,userRole) => {
+  socket.on("add-user", (newUserId, userRole) => {
     if (!onlineUsers.some((user) => user.userId === newUserId)) {
       // if user is not added before
-      onlineUsers.push({ userId: newUserId,role:userRole, socketId: socket.id });
+      onlineUsers.push({
+        userId: newUserId,
+        role: userRole,
+        socketId: socket.id,
+      });
       console.log("new user is here!", onlineUsers);
     }
     // send all active users to new user
     io.emit("get-users", onlineUsers);
   });
-socket.on("disconnect", () => {
+  socket.on("disconnect", () => {
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
     console.log("user disconnected", onlineUsers);
     // send all online users to all users
     io.emit("get-users", onlineUsers);
   });
 
-
   socket.on("send-msg", (data) => {
     if (onlineUsers) {
-      const sendUserSocket = onlineUsers.find((user) => user.userId === data.to);
-    console.log("Message to" , sendUserSocket);
+      const sendUserSocket = onlineUsers.find(
+        (user) => user.userId === data.to
+      );
+      console.log("Message to", sendUserSocket);
       if (sendUserSocket) {
-      socket.to(sendUserSocket.socketId).emit("msg-recieve", data);
+        socket.to(sendUserSocket.socketId).emit("msg-recieve", data);
         console.log(data);
         console.log(sendUserSocket.socketId);
-    }
+      }
     }
   });
 });
