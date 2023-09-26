@@ -49,12 +49,12 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-//  const io = new Server(3002, {
+// const io = new Server(3002, {
 //   cors: {
-//      origin: "http://localhost:3000",
-//      methods: ["GET", "POST"],
-//     credentials: true
-//     },
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
 // });
 
 const io = new Server(3002, {
@@ -65,18 +65,36 @@ const io = new Server(3002, {
   },
 });
 
-const onlineUsers = new Map();
+let onlineUsers = [];
+
 io.on("connection", (socket) => {
-  global.chatSocket = socket;
-  socket.on("add-user", (userId) => {
-    onlineUsers.set(userId, socket.id);
+  // add new user
+  socket.on("add-user", (newUserId,userRole) => {
+    if (!onlineUsers.some((user) => user.userId === newUserId)) {
+      // if user is not added before
+      onlineUsers.push({ userId: newUserId,role:userRole, socketId: socket.id });
+      console.log("new user is here!", onlineUsers);
+    }
+    // send all active users to new user
+    io.emit("get-users", onlineUsers);
+  });
+socket.on("disconnect", () => {
+    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+    console.log("user disconnected", onlineUsers);
+    // send all online users to all users
+    io.emit("get-users", onlineUsers);
   });
 
+
   socket.on("send-msg", (data) => {
-    const sendUserSocket = onlineUsers.get(data.to);
-    console.log(data);
-    if (sendUserSocket) {
-      socket.to(sendUserSocket).emit("msg-recieve", data);
+    if (onlineUsers) {
+      const sendUserSocket = onlineUsers.find((user) => user.userId === data.to);
+    console.log("Message to" , sendUserSocket);
+      if (sendUserSocket) {
+      socket.to(sendUserSocket.socketId).emit("msg-recieve", data);
+        console.log(data);
+        console.log(sendUserSocket.socketId);
+    }
     }
   });
 });
