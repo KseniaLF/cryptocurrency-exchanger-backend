@@ -6,17 +6,13 @@ const { validateBody } = require("../../middlewares");
 
 const { transactionSchema, transactionStatusSchema } = require("../../schemas");
 const { transactionController } = require("../../controllers");
-// const isAdmin = require("../../middlewares/isAdmin");
+const isAdmin = require("../../middlewares/isAdmin");
 
-router.get(
-  "/",
-  // isAdmin,
-  transactionController.getAllTransactions
-);
+router.get("/", isAdmin, transactionController.getAllTransactions);
 
 router.patch(
   "/:id",
-  // isAdmin,
+  isAdmin,
   validateBody(transactionStatusSchema),
   transactionController.updateStatusTransaction
 );

@@ -6,7 +6,7 @@ const { validateBody } = require("../../middlewares");
 
 const { reviewSchema, reviewStatusSchema } = require("../../schemas");
 const { reviewController } = require("../../controllers");
-// const isAdmin = require("../../middlewares/isAdmin");
+const isAdmin = require("../../middlewares/isAdmin");
 
 router.get("/", reviewController.getAllReviews);
 
@@ -14,7 +14,7 @@ router.get("/approved", reviewController.getApprovedReviews);
 
 router.patch(
   "/:id",
-  // isAdmin,
+  isAdmin,
   validateBody(reviewStatusSchema),
   reviewController.updateStatusReview
 );
