@@ -27,7 +27,7 @@ mongoose
   .then(() => {
     console.log("Database connection successful");
   })
-  .catch((error) => {
+  .catch(error => {
     console.log(error.message);
     process.exit(1);
   });
@@ -42,7 +42,7 @@ mongoose
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "https://kyiv-cryptocurrency-exchanger.vercel.app/",
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -79,14 +79,12 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-
-
 let onlineUsers = [];
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   // add new user
   socket.on("add-user", (newUserId, userRole) => {
-    if (!onlineUsers.some((user) => user.userId === newUserId)) {
+    if (!onlineUsers.some(user => user.userId === newUserId)) {
       // if user is not added before
       onlineUsers.push({
         userId: newUserId,
@@ -99,17 +97,15 @@ io.on("connection", (socket) => {
     io.emit("get-users", onlineUsers);
   });
   socket.on("disconnect", () => {
-    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
+    onlineUsers = onlineUsers.filter(user => user.socketId !== socket.id);
     console.log("user disconnected", onlineUsers);
     // send all online users to all users
     io.emit("get-users", onlineUsers);
   });
 
-  socket.on("send-msg", (data) => {
+  socket.on("send-msg", data => {
     if (onlineUsers) {
-      const sendUserSocket = onlineUsers.find(
-        (user) => user.userId === data.to
-      );
+      const sendUserSocket = onlineUsers.find(user => user.userId === data.to);
       console.log("Message to", sendUserSocket);
       if (sendUserSocket) {
         socket.to(sendUserSocket.socketId).emit("msg-recieve", data);
