@@ -6,15 +6,21 @@ const { validateBody } = require("../../middlewares");
 
 const { newsSchema } = require("../../schemas");
 const { newsController } = require("../../controllers");
+const isAdmin = require("../../middlewares/isAdmin");
 
 router.get("/", newsController.getNews);
 
 router.use(authenticate);
 
-router.post("/", validateBody(newsSchema), newsController.addNews);
+router.post("/", isAdmin, validateBody(newsSchema), newsController.addNews);
 
-router.put("/:id", validateBody(newsSchema), newsController.updateNews);
+router.put(
+  "/:id",
+  isAdmin,
+  validateBody(newsSchema),
+  newsController.updateNews
+);
 
-router.delete("/:id", newsController.deleteNews);
+router.delete("/:id", isAdmin, newsController.deleteNews);
 
 module.exports = router;
