@@ -104,15 +104,13 @@ io.on("connection", socket => {
   });
 
   socket.on("send-msg", data => {
-    if (onlineUsers) {
       const sendUserSocket = onlineUsers.find(user => user.userId === data.to);
       console.log("Message to", sendUserSocket);
       if (sendUserSocket) {
-        socket.to(sendUserSocket.socketId).emit("msg-recieve", data);
+        io.to(sendUserSocket.socketId).emit("msg-recieve", data);
         console.log(data);
         console.log(sendUserSocket.socketId);
       }
-    }
   });
 });
 
