@@ -8,7 +8,6 @@ const transactionSchema = new Schema(
     },
     currencyToExchange: {
       type: String,
-      // enum: ["curr1", "curr2"], // need full list of possible currencies here
       required: [true, "Set currency to be exchanged"],
     },
     amountToReceive: {
@@ -17,30 +16,33 @@ const transactionSchema = new Schema(
     },
     currencyToReceive: {
       type: String,
-      // enum: ["curr1", "curr2"], // need full list of possible currencies here
       required: [true, "Set currency to receive"],
     },
     paymentMethod: {
       type: String,
       required: true,
-      enum: ["creditCard", "wallet"],
+      enum: ["creditCard", "wallet", "cash"],
     },
     creditCard: {
       type: String,
+      required: function () {
+        return this.paymentMethod === "creditCard";
+      },
     },
     wallet: {
       type: String,
+      required: function () {
+        return this.paymentMethod === "wallet";
+      },
     },
     cash: {
       type: String,
     },
-
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
-
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -51,13 +53,6 @@ const transactionSchema = new Schema(
     timestamps: true,
   }
 );
-
-transactionSchema.path("creditCard").validate(function (value) {
-  if (!value && !this.wallet && !this.cash) {
-    return false;
-  }
-  return true;
-}, "Either credit card, wallet, or cash is required.");
 
 const Transaction = model("transaction", transactionSchema);
 

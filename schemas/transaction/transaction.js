@@ -5,11 +5,19 @@ const transactionSchema = Joi.object({
   amountToReceive: Joi.number().required(),
   currencyToExchange: Joi.string().required(),
   currencyToReceive: Joi.string().required(),
-  // acceptTerms: Joi.boolean().valid(true).required(),
-  paymentMethod: Joi.string().valid("creditCard", "wallet").required(),
-  creditCard: Joi.string() /* .creditCard() */,
-  wallet: Joi.string(),
-  cash: Joi.string(),
-}).xor("creditCard", "wallet", "cash");
+  paymentMethod: Joi.string().valid("creditCard", "wallet", "cash").required(),
+  creditCard: Joi.when("paymentMethod", {
+    is: "creditCard",
+    then: Joi.string().required(),
+  }),
+  wallet: Joi.when("paymentMethod", {
+    is: "wallet",
+    then: Joi.string().required(),
+  }),
+  cash: Joi.when("paymentMethod", {
+    is: "cash",
+    then: Joi.forbidden(),
+  }),
+});
 
 module.exports = transactionSchema;
