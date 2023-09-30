@@ -26,6 +26,15 @@ const userSchema = new mongoose.Schema(
     middleName: {
       type: String,
     },
+    additionalContact: {
+      type: String,
+    },
+    wallet: {
+      type: String,
+    },
+    creditCard: {
+      type: String,
+    },
 
     verify: {
       type: Boolean,

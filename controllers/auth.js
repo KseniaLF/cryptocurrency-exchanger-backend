@@ -170,6 +170,9 @@ const getCurrent = async (req, res) => {
     firstName: user.firstName,
     lastName: user.lastName,
     middleName: user.middleName,
+    additionalContact: user.additionalContact,
+    wallet: user.wallet,
+    creditCard: user.creditCard,
 
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
@@ -187,11 +190,11 @@ const logout = async (req, res) => {
 const updateUserData = async (req, res) => {
   const { user, body } = req;
 
-  const updatedReview = await User.findByIdAndUpdate({ _id: user._id }, body, {
+  const updatedUser = await User.findByIdAndUpdate({ _id: user._id }, body, {
     new: true,
   });
 
-  res.json(updatedReview); // change to other data or text
+  res.status(200).json(updatedUser);
 };
 
 module.exports = {

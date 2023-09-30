@@ -5,6 +5,9 @@ const updateUserData = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
   middleName: Joi.string(),
+  additionalContact: Joi.string(),
+  wallet: Joi.string(),
+  creditCard: Joi.string(),
 });
 
 module.exports = updateUserData;
