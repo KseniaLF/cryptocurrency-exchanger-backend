@@ -1,5 +1,13 @@
 ## cryptocurrency-exchanger-backend
 
+Для запуску:
+
+### `npm start`
+
+Для розробників:
+
+### `npm run dev`
+
 ### Ендпоінти для відгуків:
 
 ```
@@ -19,15 +27,22 @@ Schema: {
 },
 ```
 
-- `( get/post/delete ) url/api/review/my` => ендпоінти для роботи з власними відгуками авторизованого користувача.
-- Один юзер може залишити один відгук - наступні пост запити будуть просто редагувати існуючий його відгук.
-- `( get ) url/api/review?page=1` => ендпоінт для отримання усіх відгуків, у яких статус accepted, реалізована пагінація (по 5 елементів на сторінці поки)
+- `( get/post/delete ) url/api/review/my` => ендпоінти для роботи з власними
+  відгуками авторизованого користувача.
+- Один юзер може залишити один відгук - наступні пост запити будуть просто
+  редагувати існуючий його відгук.
+- `( get ) url/api/review?page=1` => ендпоінт для отримання усіх відгуків, у
+  яких статус accepted, реалізована пагінація (по 5 елементів на сторінці поки)
 - `( patch) url/api/review/:id` => Статус ревью, може змінювати лише адмін
 
 - `http://localhost:3001/api/review` - get all reviews with status pending
 
-- `http://localhost:3001/api/review?status=accepted` - get all reviews with status accepted
+- `http://localhost:3001/api/review?status=accepted` - get all reviews with
+  status accepted
 
-- `http://localhost:3001/api/review?status=rejected`- get all reviews with status rejected
+- `http://localhost:3001/api/review?status=rejected`- get all reviews with
+  status rejected
 
-- `http://localhost:3001/api/review?status=pending&limit=5` - на сторінці буде по 5 елементів, по дефолту стоїть поки що 2 для зручності тестування. Краще задавати одразу скільки потрібно елементів.
+- `http://localhost:3001/api/review?status=pending&limit=5` - на сторінці буде
+  по 5 елементів, по дефолту стоїть поки що 2 для зручності тестування. Краще
+  задавати одразу скільки потрібно елементів.
